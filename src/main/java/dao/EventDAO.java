@@ -166,6 +166,7 @@ public class EventDAO extends DAO<Event> {
         ResultSet resultSet = ps.executeQuery();
         if (resultSet.next()) {
             event.setId(resultSet.getLong("id"));
+            event.setEventId(resultSet.getString("event_id"));
             event.setRefIdNumero(resultSet.getLong("ref_id_numero"));
             event.setStartDate(resultSet.getTimestamp("start_date").toString());
             event.setDuration(resultSet.getString("duration"));
@@ -195,6 +196,7 @@ public class EventDAO extends DAO<Event> {
         while(resultSet.next()){
             Event event = new Event();
             event.setId(resultSet.getLong("id"));
+            event.setEventId(resultSet.getString("event_id"));
             event.setRefIdNumero(resultSet.getLong("ref_id_numero"));
             event.setStartDate(new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(resultSet.getTimestamp("start_date")));
             event.setDuration(resultSet.getString("duration"));
@@ -227,6 +229,7 @@ public class EventDAO extends DAO<Event> {
         while(resultSet.next()){
             Event event = new Event();
             event.setId(resultSet.getLong("id"));
+            event.setEventId(resultSet.getString("event_id"));
             event.setRefIdNumero(resultSet.getLong("ref_id_numero"));
             event.setStartDate(new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(resultSet.getTimestamp("start_date")));
             event.setDuration(resultSet.getString("duration"));
@@ -260,6 +263,7 @@ public class EventDAO extends DAO<Event> {
         while(resultSet.next()){
             Event event = new Event();
             event.setId(resultSet.getLong("id"));
+            event.setEventId(resultSet.getString("event_id"));
             event.setRefIdNumero(resultSet.getLong("ref_id_numero"));
             event.setStartDate(new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(resultSet.getTimestamp("start_date")));
             event.setDuration(resultSet.getString("duration"));

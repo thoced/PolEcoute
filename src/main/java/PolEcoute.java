@@ -7,10 +7,13 @@ import dialogNewNumeroView.DialogNewNumeroView;
 import dialogOpenDossierView.DialogOpenDossierView;
 import dialogShowEventsView.DialogShowEventsListView;
 import dialogShowEventsView.DialogShowEventsView;
+import export.ExportRapport;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -21,9 +24,11 @@ import models.OptionSearch;
 import parserEventsXml.ParserEventsXML;
 
 import java.io.File;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 public class PolEcoute extends Application {
 
@@ -40,6 +45,8 @@ public class PolEcoute extends Application {
     private DialogShowEventsListView dialogShowEventsListView;
     private Stage stageEvent;
 
+
+
     public static void main(String[] args) {
         launch(args);
     }
@@ -50,6 +57,11 @@ public class PolEcoute extends Application {
 
 
         mainView = new MainView();
+
+        mainView.getItemFermer().setOnAction(action -> {
+            primaryStage.hide();
+        });
+
         mainView.getItemOpenDossier().setOnAction(a -> {
             DialogOpenDossierView dialogOpenDossierView = new DialogOpenDossierView();
             dialogOpenDossierView.getButtonAnnuler().setOnAction(an -> {
@@ -200,12 +212,51 @@ public class PolEcoute extends Application {
                     updateRefreshSearch(numero.getId());
                 });
 
+                dialogShowEventsListView.getButtonExport().setOnAction(action -> {
+                    FileChooser fileChooser = new FileChooser();
+                    File file = fileChooser.showSaveDialog(stageShowEvents);
+                    if(file != null){
+                        ExportRapport exportRapport = new ExportRapport(file);
+                        try {
+                            exportRapport.export(dialogShowEventsListView.getTableEvents().getItems());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+
                 dialogShowEventsListView.getTableEvents().setOnMouseClicked(val -> {
                     if(val.getClickCount() > 1){
                         Event event = dialogShowEventsListView.getTableEvents().getSelectionModel().getSelectedItem();
                         if(event != null) {
                             DialogShowEventsView dialogShowEventsView = new DialogShowEventsView(numero);
                             dialogShowEventsView.showEvent(event);
+
+
+                            dialogShowEventsView.getButtonAnnuler().setOnAction(action -> {
+                                stageEvent.hide();
+                            });
+
+                            dialogShowEventsView.getButtonEnregistrer().setOnAction(action -> {
+                                try {
+                                    DAOFactory.getInstance().getEVENT_DAO().update(dialogShowEventsView.getCurrentEvent());
+                                } catch (SQLException e) {
+                                    e.printStackTrace();
+                                }
+                            });
+
+                            dialogShowEventsView.getButtonEnregistrerAndExit().setOnAction(action -> {
+                                try {
+                                    DAOFactory.getInstance().getEVENT_DAO().update(dialogShowEventsView.getCurrentEvent());
+                                    stageEvent.hide();
+                                    updateRefreshSearch(numero.getId());
+                                } catch (SQLException e) {
+                                    e.printStackTrace();
+                                }
+                            });
+
+
+
                             Scene scene = new Scene(dialogShowEventsView);
                             stageEvent = new Stage();
                             stageEvent.setScene(scene);
@@ -213,7 +264,25 @@ public class PolEcoute extends Application {
                             stageEvent.setWidth(1024);
                             stageEvent.setHeight(768);
                             stageEvent.initOwner(stageShowEvents);
+                            stageEvent.onHidingProperty().addListener((options,oldValue,newValue) -> {
+                                Alert alert = new Alert(Alert.AlertType.WARNING);
+                                alert.setTitle("Fermeture");
+                                alert.setContentText(DialogShowEventsView.WARNING_WRITE_DIALOG);
+                                ButtonType buttonOui = new ButtonType("Oui");
+                                ButtonType buttonNon = new ButtonType("Non");
+                                alert.getButtonTypes().addAll(buttonOui,buttonNon);
+                                Optional<ButtonType> result = alert.showAndWait();
+                                if(result.get() == buttonOui){
+                                    try {
+                                        DAOFactory.getInstance().getEVENT_DAO().update(dialogShowEventsView.getCurrentEvent());
+                                    } catch (SQLException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                                stageEvent.hide();
+                            });
                             stageEvent.showAndWait();
+
                         }
                     }
                 });

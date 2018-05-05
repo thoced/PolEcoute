@@ -1,9 +1,9 @@
 package dialogShowEventsView;
 
 import javafx.geometry.HPos;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import models.Event;
 import models.Numero;
@@ -27,6 +27,12 @@ public class DialogShowEventsView extends VBox {
     private TextArea textSynopsis;
     private TextArea textTranscription;
     private TextField textEventType;
+    private Button buttonAnnuler;
+    private Button buttonEnregistrer;
+    private Event currentEvent;
+    private Button buttonEnregistrerAndExit;
+
+    public static final String WARNING_WRITE_DIALOG = "Le fenetre va se fermer, voulez-vous sauvegarder vos modifications";
 
     public DialogShowEventsView(Numero numero) {
         this.numero  = numero;
@@ -37,13 +43,14 @@ public class DialogShowEventsView extends VBox {
 
         this.setAlignment(Pos.CENTER);
 
+
+
         GridPane gridPaneTop = new GridPane();
         gridPaneTop.setAlignment(Pos.CENTER);
         this.getChildren().add(gridPaneTop);
         ColumnConstraints columnConstraintsTop = new ColumnConstraints();
-        columnConstraintsTop.setPercentWidth(33);
+        columnConstraintsTop.setPercentWidth(15);
         columnConstraintsTop.setFillWidth(false);
-        columnConstraintsTop.setHgrow(Priority.ALWAYS);
         RowConstraints rowConstraintsTop = new RowConstraints();
         rowConstraintsTop.setPercentHeight(15);
 
@@ -61,13 +68,51 @@ public class DialogShowEventsView extends VBox {
         textCalledImsi = new TextField();
         textEventType = new TextField();
 
-        gridPaneTop.addColumn(0,textEventId,textDateTime,textCallerId,textCallerImei,textCallerImsi);
-        gridPaneTop.addColumn(1,textDuration,textEventType);
-        gridPaneTop.addColumn(2,textId,textRelevancy,textCalledId,textCalledImei,textCalledImsi);
+        textEventId.setDisable(true);
+        textId.setDisable(true);
+        textDateTime.setDisable(true);
+        textDuration.setDisable(true);
+        textRelevancy.setDisable(true);
+        textCallerId.setDisable(true);
+        textCalledId.setDisable(true);
+        textCallerImei.setDisable(true);
+        textCallerImsi.setDisable(true);
+        textCalledImei.setDisable(true);
+        textCalledImsi.setDisable(true);
+        textEventType.setDisable(true);
+        
+        
+
+        Label labelEventId = new Label("EventId");
+        Label labelDateTime = new Label("DateTime");
+        Label labelCallerId = new Label("Numero appelant");
+        Label labelCallerImei = new Label("Imei appelant");
+        Label labelCallerImsi = new Label("Imsi appelant");
+
+        Label labelEventType = new Label("Event Type");
+        Label labelDuration = new Label("Duration");
+
+        Label labelTargetName = new Label("Target name");
+        Label labelRelevancy = new Label("Relevancy");
+        Label labelCalledId = new Label("Numéro appelé");
+        Label labelCalledImei = new Label("Imei appelé");
+        Label labelCalledImsi = new Label("Imsi appelé");
+
+
+
+        gridPaneTop.addColumn(0,labelEventId,labelDateTime,labelCallerId,labelCallerImei,labelCallerImsi);
+        gridPaneTop.addColumn(1,textEventId,textDateTime,textCallerId,textCallerImei,textCallerImsi);
+        gridPaneTop.addColumn(2,labelEventType,labelDuration);
+        gridPaneTop.addColumn(3,textEventType,textDuration);
+        gridPaneTop.addColumn(4,labelTargetName,labelRelevancy,labelCalledId,labelCalledImei,labelCalledImsi);
+        gridPaneTop.addColumn(5,textId,textRelevancy,textCalledId,textCalledImei,textCalledImsi);
 
         gridPaneTop.getColumnConstraints().add(0,columnConstraintsTop);
         gridPaneTop.getColumnConstraints().add(1,columnConstraintsTop);
         gridPaneTop.getColumnConstraints().add(2,columnConstraintsTop);
+        gridPaneTop.getColumnConstraints().add(3,columnConstraintsTop);
+        gridPaneTop.getColumnConstraints().add(4,columnConstraintsTop);
+        gridPaneTop.getColumnConstraints().add(5,columnConstraintsTop);
         gridPaneTop.getRowConstraints().addAll(rowConstraintsTop);
 
 
@@ -79,18 +124,47 @@ public class DialogShowEventsView extends VBox {
         rowConstraintsBottom.setPercentHeight(45);
         rowConstraintsBottom.setFillHeight(true);
 
+        RowConstraints rowConstraintsLabel = new RowConstraints();
+        rowConstraintsLabel.setPercentHeight(5);
+
+
 
         textSynopsis = new TextArea();
         textTranscription = new TextArea();
+        textSynopsis.setWrapText(true);
+        textSynopsis.setDisable(true);
 
-        gridPaneBottom.addColumn(0,textSynopsis,textTranscription);
+
+        Label labelSynopsis = new Label("Synopsis:");
+        Label labelTranscription = new Label("Transcription:");
+
+        gridPaneBottom.addColumn(0,labelSynopsis,textSynopsis,labelTranscription,textTranscription);
         gridPaneBottom.getColumnConstraints().add(0,columnConstraintsBottom);
-        gridPaneBottom.getRowConstraints().add(0,rowConstraintsBottom);
+        gridPaneBottom.getRowConstraints().add(0,rowConstraintsLabel);
         gridPaneBottom.getRowConstraints().add(1,rowConstraintsBottom);
+        gridPaneBottom.getRowConstraints().add(2,rowConstraintsLabel);
+        gridPaneBottom.getRowConstraints().add(3,rowConstraintsBottom);
+
+
+        HBox hBox = new HBox();
+        buttonAnnuler = new Button("Annuler");
+        buttonEnregistrer = new Button("Enregistrer");
+        buttonEnregistrerAndExit = new Button("Enregistrer et Quitter");
+        hBox.setPadding(new Insets(8));
+        hBox.setAlignment(Pos.CENTER_RIGHT);
+        hBox.setSpacing(8);
+        hBox.getChildren().addAll(buttonAnnuler,buttonEnregistrer,buttonEnregistrerAndExit);
+        this.getChildren().add(hBox);
+
+
+
+
 
     }
 
     public void showEvent(Event event){
+
+        this.currentEvent = event;
         textEventId.setText(event.getEventId());
         textId.setText(event.getTargetName());
         textDateTime.setText(event.getStartDate());
@@ -107,6 +181,24 @@ public class DialogShowEventsView extends VBox {
         textTranscription.setText(event.getTranscription());
     }
 
+    public Button getButtonAnnuler() {
+        return buttonAnnuler;
+    }
 
+    public Button getButtonEnregistrer() {
+        return buttonEnregistrer;
+    }
 
+    public Button getButtonEnregistrerAndExit() {
+        return buttonEnregistrerAndExit;
+    }
+
+    public TextArea getTextTranscription() {
+        return textTranscription;
+    }
+
+    public Event getCurrentEvent() {
+        currentEvent.setTranscription(textTranscription.getText());
+        return currentEvent;
+    }
 }

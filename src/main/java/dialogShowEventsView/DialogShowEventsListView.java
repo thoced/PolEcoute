@@ -2,9 +2,12 @@ package dialogShowEventsView;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import jfxtras.scene.control.CalendarPicker;
@@ -29,6 +32,7 @@ public class DialogShowEventsListView extends BorderPane {
     private TableColumn<Event, String> columnCaller;
     private TableColumn<Event, String> columnCalled;
     private TableColumn<Event, String> columnEventType;
+    private Button buttonExport;
 
 
     public DialogShowEventsListView() {
@@ -37,6 +41,8 @@ public class DialogShowEventsListView extends BorderPane {
     }
 
     private void init() {
+
+
 
 
        GridPane gridPane = new GridPane();
@@ -57,7 +63,16 @@ public class DialogShowEventsListView extends BorderPane {
        calendarBasse.withShowTime(true);
        calendarHaute.withShowTime(true);
 
-       gridPane.addRow(0,labelRelevancy,comboRelevancy,labelDateBasse,calendarBasse,labelDateHaute,calendarHaute);
+       ColumnConstraints columnConstraintsFirst = new ColumnConstraints();
+       columnConstraintsFirst.setPercentWidth(10);
+       ColumnConstraints columnConstraintsDate = new ColumnConstraints();
+       columnConstraintsDate.setPercentWidth(30);
+       gridPane.addRow(0,labelRelevancy,labelDateBasse,labelDateHaute);
+       gridPane.addRow(1,comboRelevancy,calendarBasse,calendarHaute);
+       gridPane.getColumnConstraints().add(0,columnConstraintsFirst);
+       gridPane.getColumnConstraints().add(1,columnConstraintsDate);
+       gridPane.getColumnConstraints().add(2,columnConstraintsDate);
+
 
        labelNbTuple = new Label(TEXT_LABEL_TUPLE);
        gridPane.addRow(1,labelNbTuple);
@@ -87,9 +102,14 @@ public class DialogShowEventsListView extends BorderPane {
 
 
        HBox hBox = new HBox();
+       hBox.setAlignment(Pos.CENTER_RIGHT);
+       hBox.setPadding(new Insets(8));
        this.setBottom(hBox);
        buttonAnnuler = new Button("Annuler");
-       hBox.getChildren().addAll(buttonAnnuler);
+       buttonExport = new Button("Export rapport");
+       buttonExport.setStyle("-fx-backgroundColor:blue");
+
+       hBox.getChildren().addAll(buttonExport,buttonAnnuler);
 
 
     }
@@ -100,6 +120,10 @@ public class DialogShowEventsListView extends BorderPane {
 
     public Button getButtonAnnuler() {
         return buttonAnnuler;
+    }
+
+    public Button getButtonExport() {
+        return buttonExport;
     }
 
     public ComboBox<String> getComboRelevancy() {
