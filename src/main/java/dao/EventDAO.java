@@ -2,10 +2,9 @@ package dao;
 
 import MainView.SingletonConnection;
 import models.Event;
+import models.OptionSearch;
 
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Timestamp;
+import java.sql.*;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -57,7 +56,8 @@ public class EventDAO extends DAO<Event> {
                 //LocalDate localDate = LocalDate.parse(model.getStartDate() + " " + model.getStartTime(),formatter);
                 LocalDateTime localDateTime = LocalDateTime.parse(model.getStartDate() + " " + model.getStartTime(), formatter);
                 Timestamp timestamp = Timestamp.valueOf(localDateTime);
-                ps.setTimestamp(2, timestamp, Calendar.getInstance(TimeZone.getTimeZone(SingletonConnection.TIME_ZONE)));
+              //  ps.setTimestamp(2, timestamp, Calendar.getInstance(TimeZone.getTimeZone(SingletonConnection.TIME_ZONE)));
+                ps.setTimestamp(2, timestamp);
 
                 ps.setString(3, model.getDuration());
                 ps.setString(4, model.getEventType());
@@ -144,26 +144,143 @@ public class EventDAO extends DAO<Event> {
 
     @Override
     public void delete(long id) throws SQLException {
-
+        PreparedStatement ps = SingletonConnection.getInstance().getConnection().prepareStatement("delete from t_events where id = ?");
+        ps.setLong(1,id);
+        ps.executeUpdate();
     }
 
     @Override
-    public void update(Event model) {
+    public void update(Event model) throws SQLException {
+        PreparedStatement ps = SingletonConnection.getInstance().getConnection().prepareStatement("update t_events SET transcription = ? WHERE id = ?");
+        ps.setString(1,model.getTranscription());
+        ps.setLong(2,model.getId());
+        ps.executeUpdate();
 
     }
 
     @Override
     public Event find(long id) throws SQLException {
-        return null;
+        Event event = new Event();
+        PreparedStatement ps = SingletonConnection.getInstance().getConnection().prepareStatement("select * from t_events where id = ?");
+        ps.setLong(1, id);
+        ResultSet resultSet = ps.executeQuery();
+        if (resultSet.next()) {
+            event.setId(resultSet.getLong("id"));
+            event.setRefIdNumero(resultSet.getLong("ref_id_numero"));
+            event.setStartDate(resultSet.getTimestamp("start_date").toString());
+            event.setDuration(resultSet.getString("duration"));
+            event.setEventType(resultSet.getString("event_type"));
+            event.setDirection(resultSet.getString("direction"));
+            event.setRelevancy(resultSet.getString("relevancy"));
+            event.setCallerId(resultSet.getString("caller_id"));
+            event.setCallerImei(resultSet.getString("caller_imei"));
+            event.setCallerImsi(resultSet.getString("caller_imsi"));
+            event.setTargetName(resultSet.getString("target_name"));
+            event.setCalledId(resultSet.getString("called_id"));
+            event.setCalledImei(resultSet.getString("called_imei"));
+            event.setCalledImsi(resultSet.getString("called_imsi"));
+            event.setSynopsis(resultSet.getString("synopsis"));
+            event.setSmsContent(resultSet.getString("sms_content"));
+            event.setLocation(resultSet.getString("location"));
+            event.setTranscription(resultSet.getString("transcription"));
+        }
+        return event;
     }
 
     @Override
     public List<Event> selectAll() throws SQLException {
-        return null;
+        List<Event> list = new ArrayList<>();
+        Statement st = SingletonConnection.getInstance().getConnection().createStatement();
+        ResultSet resultSet = st.executeQuery("select * from t_events");
+        while(resultSet.next()){
+            Event event = new Event();
+            event.setId(resultSet.getLong("id"));
+            event.setRefIdNumero(resultSet.getLong("ref_id_numero"));
+            event.setStartDate(new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(resultSet.getTimestamp("start_date")));
+            event.setDuration(resultSet.getString("duration"));
+            event.setEventType(resultSet.getString("event_type"));
+            event.setDirection(resultSet.getString("direction"));
+            event.setRelevancy(resultSet.getString("relevancy"));
+            event.setCallerId(resultSet.getString("caller_id"));
+            event.setCallerImei(resultSet.getString("caller_imei"));
+            event.setCallerImsi(resultSet.getString("caller_imsi"));
+            event.setTargetName(resultSet.getString("target_name"));
+            event.setCalledId(resultSet.getString("called_id"));
+            event.setCalledImei(resultSet.getString("called_imei"));
+            event.setCalledImsi(resultSet.getString("called_imsi"));
+            event.setSynopsis(resultSet.getString("synopsis"));
+            event.setSmsContent(resultSet.getString("sms_content"));
+            event.setLocation(resultSet.getString("location"));
+            event.setTranscription(resultSet.getString("transcription"));
+            list.add(event);
+        }
+        return list;
+
     }
 
     @Override
     public List<Event> selectFromForeignKey(long id) throws SQLException {
-        return null;
+        List<Event> list = new ArrayList<>();
+        PreparedStatement ps  = SingletonConnection.getInstance().getConnection().prepareStatement("select * from t_events where ref_id_numero = ?");
+        ps.setLong(1,id);
+        ResultSet resultSet = ps.executeQuery();
+        while(resultSet.next()){
+            Event event = new Event();
+            event.setId(resultSet.getLong("id"));
+            event.setRefIdNumero(resultSet.getLong("ref_id_numero"));
+            event.setStartDate(new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(resultSet.getTimestamp("start_date")));
+            event.setDuration(resultSet.getString("duration"));
+            event.setEventType(resultSet.getString("event_type"));
+            event.setDirection(resultSet.getString("direction"));
+            event.setRelevancy(resultSet.getString("relevancy"));
+            event.setCallerId(resultSet.getString("caller_id"));
+            event.setCallerImei(resultSet.getString("caller_imei"));
+            event.setCallerImsi(resultSet.getString("caller_imsi"));
+            event.setTargetName(resultSet.getString("target_name"));
+            event.setCalledId(resultSet.getString("called_id"));
+            event.setCalledImei(resultSet.getString("called_imei"));
+            event.setCalledImsi(resultSet.getString("called_imsi"));
+            event.setSynopsis(resultSet.getString("synopsis"));
+            event.setSmsContent(resultSet.getString("sms_content"));
+            event.setLocation(resultSet.getString("location"));
+            event.setTranscription(resultSet.getString("transcription"));
+            list.add(event);
+        }
+        return list;
+    }
+
+    public List<Event> selectFromForeignKeyAndOption(long id,OptionSearch optionSearch) throws SQLException {
+        List<Event> list = new ArrayList<>();
+        PreparedStatement ps  = SingletonConnection.getInstance().getConnection().prepareStatement("select * from t_events where ref_id_numero = ? AND relevancy = ? AND start_date BETWEEN ? AND ?");
+        ps.setLong(1,id);
+        ps.setString(2,optionSearch.getRelevancy());
+        ps.setTimestamp(3,Timestamp.valueOf(optionSearch.getDateBasse()));
+        ps.setTimestamp(4,Timestamp.valueOf(optionSearch.getDateHaute()));
+        ResultSet resultSet = ps.executeQuery();
+        while(resultSet.next()){
+            Event event = new Event();
+            event.setId(resultSet.getLong("id"));
+            event.setRefIdNumero(resultSet.getLong("ref_id_numero"));
+            event.setStartDate(new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(resultSet.getTimestamp("start_date")));
+            event.setDuration(resultSet.getString("duration"));
+            event.setEventType(resultSet.getString("event_type"));
+            event.setDirection(resultSet.getString("direction"));
+            event.setRelevancy(resultSet.getString("relevancy"));
+            event.setCallerId(resultSet.getString("caller_id"));
+            event.setCallerImei(resultSet.getString("caller_imei"));
+            event.setCallerImsi(resultSet.getString("caller_imsi"));
+            event.setTargetName(resultSet.getString("target_name"));
+            event.setCalledId(resultSet.getString("called_id"));
+            event.setCalledImei(resultSet.getString("called_imei"));
+            event.setCalledImsi(resultSet.getString("called_imsi"));
+            event.setSynopsis(resultSet.getString("synopsis"));
+            event.setSmsContent(resultSet.getString("sms_content"));
+            event.setLocation(resultSet.getString("location"));
+            event.setTranscription(resultSet.getString("transcription"));
+            list.add(event);
+        }
+        return list;
+
+
     }
 }

@@ -13,6 +13,7 @@ public class MainView extends BorderPane {
     private MenuItem itemOpenDossier;
     private MenuItem itemImport;
     private MenuItem itemAddNumero;
+    private MenuItem itemShowEvents;
 
     public MainView() {
         super();
@@ -41,7 +42,10 @@ public class MainView extends BorderPane {
         itemAddNumero = new MenuItem("Ajouter un numéro au dossier");
         itemAddNumero.setDisable(true);
 
-        menuGestion.getItems().addAll(itemImport,itemAddNumero);
+        itemShowEvents = new MenuItem("Afficher les events");
+        itemShowEvents.setDisable(true);
+
+        menuGestion.getItems().addAll(itemImport,itemAddNumero,itemShowEvents);
 
         this.setTop(menuBar);
 
@@ -65,5 +69,9 @@ public class MainView extends BorderPane {
 
     public MenuItem getItemAddNumero() {
         return itemAddNumero;
+    }
+
+    public MenuItem getItemShowEvents() {
+        return itemShowEvents;
     }
 }

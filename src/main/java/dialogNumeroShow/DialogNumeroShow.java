@@ -1,4 +1,4 @@
-package dialogImportEvents;
+package dialogNumeroShow;
 
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
@@ -8,7 +8,7 @@ import models.Dossier;
 
 import java.sql.SQLException;
 
-public class DialogImportEvents extends BorderPane {
+public class DialogNumeroShow extends BorderPane {
 
     private ListNumeroView listNumeroView;
 
@@ -16,7 +16,7 @@ public class DialogImportEvents extends BorderPane {
     private Button buttonSelected;
     private Button buttonAnnuler;
 
-    public DialogImportEvents(Dossier dossier) {
+    public DialogNumeroShow(Dossier dossier) {
         super();
 
         this.dossier = dossier;

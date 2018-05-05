@@ -1,24 +1,30 @@
 package models;
 
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
+
 public class Event {
 
     private long id;
 
     private String eventId;
 
-    private String startDate;
+    private StringProperty startDate = new SimpleStringProperty();
 
     private String startTime;
 
     private String duration;
 
-    private String eventType;
+    private StringProperty eventType = new SimpleStringProperty();
 
     private String direction;
 
     private String relevancy;
 
-    private String callerId;
+    private StringProperty callerId = new SimpleStringProperty();
 
     private String callerImei;
 
@@ -26,13 +32,13 @@ public class Event {
 
     private String targetName;
 
-    private String calledId;
+    private StringProperty calledId = new SimpleStringProperty();
 
     private String calledImei;
 
     private String calledImsi;
 
-    private String synopsis;
+    private StringProperty synopsis = new SimpleStringProperty();
 
     private String location;
 
@@ -62,11 +68,15 @@ public class Event {
     }
 
     public String getStartDate() {
+        return startDate.get();
+    }
+
+    public StringProperty startDateProperty() {
         return startDate;
     }
 
     public void setStartDate(String startDate) {
-        this.startDate = startDate;
+        this.startDate.set(startDate);
     }
 
     public String getStartTime() {
@@ -86,11 +96,15 @@ public class Event {
     }
 
     public String getEventType() {
+        return eventType.get();
+    }
+
+    public StringProperty eventTypeProperty() {
         return eventType;
     }
 
     public void setEventType(String eventType) {
-        this.eventType = eventType;
+        this.eventType.set(eventType);
     }
 
     public String getDirection() {
@@ -110,11 +124,27 @@ public class Event {
     }
 
     public String getCallerId() {
+        return callerId.get();
+    }
+
+    public StringProperty callerIdProperty() {
         return callerId;
     }
 
     public void setCallerId(String callerId) {
-        this.callerId = callerId;
+        this.callerId.set(callerId);
+    }
+
+    public String getCalledId() {
+        return calledId.get();
+    }
+
+    public StringProperty calledIdProperty() {
+        return calledId;
+    }
+
+    public void setCalledId(String calledId) {
+        this.calledId.set(calledId);
     }
 
     public String getCallerImei() {
@@ -141,13 +171,7 @@ public class Event {
         this.targetName = targetName;
     }
 
-    public String getCalledId() {
-        return calledId;
-    }
 
-    public void setCalledId(String calledId) {
-        this.calledId = calledId;
-    }
 
     public String getCalledImei() {
         return calledImei;
@@ -166,11 +190,15 @@ public class Event {
     }
 
     public String getSynopsis() {
+        return synopsis.get();
+    }
+
+    public StringProperty synopsisProperty() {
         return synopsis;
     }
 
     public void setSynopsis(String synopsis) {
-        this.synopsis = synopsis;
+        this.synopsis.set(synopsis);
     }
 
     public String getLocation() {
@@ -207,28 +235,8 @@ public class Event {
 
 
     @Override
-    public String toString() {
-        return "Event{" +
-                "id=" + id +
-                ", eventId='" + eventId + '\'' +
-                ", startDate='" + startDate + '\'' +
-                ", startTime='" + startTime + '\'' +
-                ", duration='" + duration + '\'' +
-                ", eventType='" + eventType + '\'' +
-                ", direction='" + direction + '\'' +
-                ", relevancy='" + relevancy + '\'' +
-                ", callerId='" + callerId + '\'' +
-                ", callerImei='" + callerImei + '\'' +
-                ", callerImsi='" + callerImsi + '\'' +
-                ", targetName='" + targetName + '\'' +
-                ", calledId='" + calledId + '\'' +
-                ", calledImei='" + calledImei + '\'' +
-                ", calledImsi='" + calledImsi + '\'' +
-                ", synopsis='" + synopsis + '\'' +
-                ", location='" + location + '\'' +
-                ", transcription='" + transcription + '\'' +
-                ", smsContent='" + smsContent + '\'' +
-                ", refIdNumero=" + refIdNumero +
-                '}';
+    public String toString(){
+
+        return   startDate + " " + direction + " " + callerId + " -> " + calledId + " : " + synopsis;
     }
 }

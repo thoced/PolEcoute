@@ -101,7 +101,7 @@ public class ParserEventsXML extends DefaultHandler {
             }
 
             case "Caller-ID":{
-                event.setCalledId(text);
+                event.setCallerId(text);
                 break;
             }
 
