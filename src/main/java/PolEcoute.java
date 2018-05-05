@@ -308,6 +308,7 @@ public class PolEcoute extends Application {
             stageShowNumero = new Stage();
             stageShowNumero.setScene(scene);
             stageShowNumero.initModality(Modality.APPLICATION_MODAL);
+            stageShowNumero.setTitle(DialogNumeroShow.NAME);
             stageShowNumero.showAndWait();
 
 

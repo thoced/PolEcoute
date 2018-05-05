@@ -16,6 +16,8 @@ public class DialogNumeroShow extends BorderPane {
     private Button buttonSelected;
     private Button buttonAnnuler;
 
+    public static final String NAME = "Selection du numéro";
+
     public DialogNumeroShow(Dossier dossier) {
         super();
 
