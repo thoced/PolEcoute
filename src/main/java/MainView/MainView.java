@@ -14,6 +14,7 @@ public class MainView extends BorderPane {
     private MenuItem itemImport;
     private MenuItem itemAddNumero;
     private MenuItem itemShowEvents;
+    private MenuItem itemSearch;
 
     public MainView() {
         super();
@@ -45,7 +46,10 @@ public class MainView extends BorderPane {
         itemShowEvents = new MenuItem("Afficher les events");
         itemShowEvents.setDisable(true);
 
-        menuGestion.getItems().addAll(itemImport,itemAddNumero,itemShowEvents);
+        itemSearch = new MenuItem("Recherches");
+        itemSearch.setDisable(true);
+
+        menuGestion.getItems().addAll(itemImport,itemAddNumero,itemShowEvents,itemSearch);
 
         this.setTop(menuBar);
 
@@ -73,5 +77,9 @@ public class MainView extends BorderPane {
 
     public MenuItem getItemShowEvents() {
         return itemShowEvents;
+    }
+
+    public MenuItem getItemSearch() {
+        return itemSearch;
     }
 }

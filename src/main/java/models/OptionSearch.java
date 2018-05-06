@@ -8,6 +8,7 @@ public class OptionSearch {
     private String relevancy;
     private LocalDateTime dateBasse;
     private LocalDateTime dateHaute;
+    private String keySearch;
 
     private static OptionSearch instance = null;
 
@@ -45,5 +46,13 @@ public class OptionSearch {
 
     public void setDateHaute(LocalDateTime dateHaute) {
         this.dateHaute = dateHaute;
+    }
+
+    public String getKeySearch() {
+        return keySearch;
+    }
+
+    public void setKeySearch(String keySearch) {
+        this.keySearch = keySearch;
     }
 }

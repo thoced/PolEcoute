@@ -252,6 +252,40 @@ public class EventDAO extends DAO<Event> {
         return list;
     }
 
+    public List<Event> selectFromForeignKeyANDSearch(long id,OptionSearch optionSearch) throws SQLException {
+        List<Event> list = new ArrayList<>();
+        PreparedStatement ps  = SingletonConnection.getInstance().getConnection().prepareStatement("select * from t_events where ref_id_numero = ? AND synopsis LIKE ?");
+        ps.setLong(1,id);
+        String keySearch = "%" + optionSearch.getKeySearch() + "%";
+        ps.setString(2,keySearch);
+        ResultSet resultSet = ps.executeQuery();
+        while(resultSet.next()){
+            Event event = new Event();
+            event.setId(resultSet.getLong("id"));
+            event.setEventId(resultSet.getString("event_id"));
+            event.setRefIdNumero(resultSet.getLong("ref_id_numero"));
+            event.setStartDate(new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(resultSet.getTimestamp("start_date")));
+            event.setDuration(resultSet.getString("duration"));
+            event.setEventType(resultSet.getString("event_type"));
+            event.setDirection(resultSet.getString("direction"));
+            event.setRelevancy(resultSet.getString("relevancy"));
+            event.setCallerId(resultSet.getString("caller_id"));
+            event.setCallerImei(resultSet.getString("caller_imei"));
+            event.setCallerImsi(resultSet.getString("caller_imsi"));
+            event.setTargetName(resultSet.getString("target_name"));
+            event.setCalledId(resultSet.getString("called_id"));
+            event.setCalledImei(resultSet.getString("called_imei"));
+            event.setCalledImsi(resultSet.getString("called_imsi"));
+            event.setSynopsis(resultSet.getString("synopsis"));
+            event.setSmsContent(resultSet.getString("sms_content"));
+            event.setLocation(resultSet.getString("location"));
+            event.setTranscription(resultSet.getString("transcription"));
+            list.add(event);
+        }
+        return list;
+
+    }
+
     public List<Event> selectFromForeignKeyAndOption(long id,OptionSearch optionSearch) throws SQLException {
         List<Event> list = new ArrayList<>();
         PreparedStatement ps  = SingletonConnection.getInstance().getConnection().prepareStatement("select * from t_events where ref_id_numero = ? AND relevancy = ? AND start_date BETWEEN ? AND ?");

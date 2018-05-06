@@ -5,6 +5,7 @@ import dialogNumeroShow.DialogNumeroShow;
 import dialogNewDossierView.DialogNewDossierView;
 import dialogNewNumeroView.DialogNewNumeroView;
 import dialogOpenDossierView.DialogOpenDossierView;
+import dialogSearch.DialogSearchView;
 import dialogShowEventsView.DialogShowEventsListView;
 import dialogShowEventsView.DialogShowEventsView;
 import export.ExportRapport;
@@ -44,7 +45,8 @@ public class PolEcoute extends Application {
     private Stage stageShowNumero;
     private DialogShowEventsListView dialogShowEventsListView;
     private Stage stageEvent;
-
+    private DialogSearchView dialogSearchView;
+    private Stage stageSearch;
 
 
     public static void main(String[] args) {
@@ -73,12 +75,14 @@ public class PolEcoute extends Application {
                     mainView.getItemImport().setDisable(false);
                     mainView.getItemAddNumero().setDisable(false);
                     mainView.getItemShowEvents().setDisable(false);
+                    mainView.getItemSearch().setDisable(false);
                     primaryStage.setTitle("Dossier en cours: " + currentDossier.toString());
                 }
                 else {
                     mainView.getItemImport().setDisable(true);
                     mainView.getItemAddNumero().setDisable(true);
                     mainView.getItemShowEvents().setDisable(true);
+                    mainView.getItemSearch().setDisable(true);
                 }
                 stage.hide();
             });
@@ -314,6 +318,47 @@ public class PolEcoute extends Application {
 
         });
 
+        mainView.getItemSearch().setOnAction(action -> {
+            dialogSearchView = new DialogSearchView();
+            dialogSearchView.getButtonAnnuler().setOnAction(annuler -> {
+                stageSearch.hide();
+            });
+
+            try {
+                List<Numero> list = DAOFactory.getInstance().getNUMERO_DAO().selectFromForeignKey(currentDossier.getId());
+                dialogSearchView.getComboNumero().setItems(FXCollections.observableList(list));
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+            dialogSearchView.getButtonSearch().setOnAction(search -> {
+                try {
+                    OptionSearch.getInstance().setKeySearch(dialogSearchView.getTextSearch().getText());
+                    Numero numero = dialogSearchView.getComboNumero().getValue();
+                    List<Event> list = ((EventDAO)DAOFactory.getInstance().getEVENT_DAO()).selectFromForeignKeyANDSearch(numero.getId(),OptionSearch.getInstance());
+                    dialogSearchView.getTableEvents().getItems().clear();
+                    dialogSearchView.getTableEvents().setItems(FXCollections.observableList(list));
+
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            });
+
+            Scene scene = new Scene(dialogSearchView);
+            stageSearch = new Stage();
+            stageSearch.setScene(scene);
+            stageSearch.setTitle(DialogSearchView.NAME);
+            stageSearch.initModality(Modality.APPLICATION_MODAL);
+            stageSearch.setWidth(1024);
+            stageSearch.setHeight(768);
+            stageSearch.showAndWait();
+        });
+
+
+        /* -----------------------------------------
+         Primary
+         */
 
         Scene scene = new Scene(mainView);
         primaryStage.setScene(scene);
