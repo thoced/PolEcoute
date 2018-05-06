@@ -1,12 +1,11 @@
 package export;
 
 import models.Event;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.xwpf.usermodel.*;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.List;
 
 public class ExportRapport {
@@ -62,5 +61,40 @@ public class ExportRapport {
 
 
 
+    }
+
+    public void replace(List<Event> list) throws IOException, InvalidFormatException {
+        FileInputStream fileInputStream = new FileInputStream("/home/thonon/IdeaProjects/PolEcoute/src/main/resources/template.docx");
+        XWPFDocument doc = new XWPFDocument(fileInputStream);
+
+        List<XWPFParagraph> paragraphs = doc.getParagraphs();
+
+        for(XWPFParagraph paragraph : paragraphs){
+            List<XWPFRun> runs = paragraph.getRuns();
+
+            for(XWPFRun run : runs){
+
+                String text = run.getText(0);
+                if(text != null &&  text.contains("%EVENTID%")){
+                   text = text.replace("%EVENTID%",list.get(0).getEventId());
+
+                }
+
+                if(text != null &&  text.contains("%DATE%")){
+
+                    text = text.replace("%DATE%",list.get(0).getStartDate());
+
+                }
+
+                run.setText(text,0);
+            }
+
+        }
+
+        FileOutputStream fileOutputStream = new FileOutputStream(file);
+        doc.write(fileOutputStream);
+        doc.close();
+        fileOutputStream.close();
+        fileInputStream.close();
     }
 }

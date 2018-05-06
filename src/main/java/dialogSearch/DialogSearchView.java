@@ -34,6 +34,7 @@ public class DialogSearchView extends BorderPane {
     private ComboBox<Numero> comboNumero;
     private TextField textSearch;
     private Button buttonSearch;
+    private TableColumn<Event,String> columnEventId;
 
 
     public DialogSearchView() {
@@ -81,17 +82,19 @@ public class DialogSearchView extends BorderPane {
 
       this.setCenter(tableEvents);
 
+       columnEventId = new TableColumn<Event,String>("Event Id");
        columnDate = new TableColumn<Event,String>("Date");
        columnSynopsis = new TableColumn<Event,String>("Synopsis");
        columnCaller = new TableColumn<Event,String>("Appelant");
        columnCalled = new TableColumn<Event,String>("Appelé");
        columnEventType = new TableColumn<Event,String>("Type");
+       columnEventId.setCellValueFactory(new PropertyValueFactory("eventId"));
        columnDate.setCellValueFactory(new PropertyValueFactory("startDate"));
        columnSynopsis.setCellValueFactory(new PropertyValueFactory("synopsis"));
        columnCaller.setCellValueFactory(new PropertyValueFactory("callerId"));
        columnCalled.setCellValueFactory(new PropertyValueFactory("calledId"));
        columnEventType.setCellValueFactory(new PropertyValueFactory("eventType"));
-       tableEvents.getColumns().addAll(columnDate,columnCaller,columnCalled,columnEventType,columnSynopsis);
+       tableEvents.getColumns().addAll(columnEventId,columnDate,columnCaller,columnCalled,columnEventType,columnSynopsis);
 
 
        HBox hBox = new HBox();

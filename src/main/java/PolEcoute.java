@@ -18,10 +18,12 @@ import javafx.scene.control.ButtonType;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import models.Dossier;
 import models.Event;
 import models.Numero;
 import models.OptionSearch;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import parserEventsXml.ParserEventsXML;
 
 import java.io.File;
@@ -147,8 +149,8 @@ public class PolEcoute extends Application {
             Scene scene = new Scene(dialogOpenDossierView);
             stage = new Stage();
             stage.setScene(scene);
-            stage.setWidth(800);
-            stage.setHeight(600);
+            stage.setWidth(600);
+            stage.setHeight(400);
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.showAndWait();
 
@@ -220,6 +222,7 @@ public class PolEcoute extends Application {
                         ExportRapport exportRapport = new ExportRapport(file);
                         try {
                             exportRapport.export(dialogShowEventsListView.getTableEvents().getItems());
+                           // exportRapport.replace(dialogShowEventsListView.getTableEvents().getItems());
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -265,6 +268,7 @@ public class PolEcoute extends Application {
                             stageEvent.setWidth(1024);
                             stageEvent.setHeight(768);
                             stageEvent.initOwner(stageShowEvents);
+                            stageEvent.initStyle(StageStyle.DECORATED);
                             stageEvent.onHidingProperty().addListener((options,oldValue,newValue) -> {
                                 Alert alert = new Alert(Alert.AlertType.WARNING);
                                 alert.setTitle("Fermeture");
@@ -299,6 +303,7 @@ public class PolEcoute extends Application {
                 stageShowEvents.initModality(Modality.APPLICATION_MODAL);
                 stageShowEvents.setWidth(1024);
                 stageShowEvents.setHeight(768);
+                stageShowEvents.initStyle(StageStyle.DECORATED);
                 stageShowEvents.showAndWait();
 
 
@@ -376,6 +381,7 @@ public class PolEcoute extends Application {
                         stageShowEvents.setWidth(1024);
                         stageShowEvents.setHeight(768);
                         stageShowEvents.initModality(Modality.APPLICATION_MODAL);
+                        stageShowEvents.initStyle(StageStyle.DECORATED);
                         stageShowEvents.showAndWait();
                     }
                 }
@@ -389,6 +395,7 @@ public class PolEcoute extends Application {
             stageSearch.initModality(Modality.APPLICATION_MODAL);
             stageSearch.setWidth(1024);
             stageSearch.setHeight(768);
+            stageSearch.initStyle(StageStyle.DECORATED);
             stageSearch.showAndWait();
         });
 
@@ -402,6 +409,7 @@ public class PolEcoute extends Application {
         primaryStage.setWidth(1024);
         primaryStage.setHeight(768);
         primaryStage.setTitle("Pol Ecoute");
+        primaryStage.initStyle(StageStyle.DECORATED);
         primaryStage.show();
     }
 
