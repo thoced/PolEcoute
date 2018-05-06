@@ -55,9 +55,6 @@ public class PolEcoute extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-
-
-
         mainView = new MainView();
 
         mainView.getItemFermer().setOnAction(action -> {

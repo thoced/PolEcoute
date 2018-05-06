@@ -3,6 +3,8 @@ package MainView;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 
 public class MainView extends BorderPane {
@@ -52,6 +54,11 @@ public class MainView extends BorderPane {
         menuGestion.getItems().addAll(itemImport,itemAddNumero,itemShowEvents,itemSearch);
 
         this.setTop(menuBar);
+
+        Image img = new Image("logo.png");
+        ImageView imageView = new ImageView();
+        imageView.setImage(img);
+        this.setCenter(imageView);
 
     }
 
