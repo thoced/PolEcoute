@@ -345,6 +345,46 @@ public class PolEcoute extends Application {
                 }
             });
 
+            dialogSearchView.getTableEvents().setOnMouseClicked(mouse -> {
+                if(mouse.getClickCount() > 1){
+                    Event event = dialogSearchView.getTableEvents().getSelectionModel().getSelectedItem();
+                    if(event != null) {
+                        DialogShowEventsView dialogShowEventsView = new DialogShowEventsView(null);
+                        dialogShowEventsView.showEvent(event);
+
+                        dialogShowEventsView.getButtonAnnuler().setOnAction(annuler -> {
+                            stageShowEvents.hide();
+                        });
+
+                        dialogShowEventsView.getButtonEnregistrer().setOnAction(enr -> {
+                            try {
+                                DAOFactory.getInstance().getEVENT_DAO().update(dialogShowEventsView.getCurrentEvent());
+                            } catch (SQLException e) {
+                                e.printStackTrace();
+                            }
+                        });
+
+                        dialogShowEventsView.getButtonEnregistrerAndExit().setOnAction(enr -> {
+                            try {
+                                DAOFactory.getInstance().getEVENT_DAO().update(dialogShowEventsView.getCurrentEvent());
+                                stageShowEvents.hide();
+                                } catch (SQLException e) {
+                                e.printStackTrace();
+                            }
+                        });
+
+                        Scene scene = new Scene(dialogShowEventsView);
+                        stageShowEvents = new Stage();
+                        stageShowEvents.setScene(scene);
+                        stageShowEvents.setWidth(1024);
+                        stageShowEvents.setHeight(768);
+                        stageShowEvents.initModality(Modality.APPLICATION_MODAL);
+                        stageShowEvents.showAndWait();
+                    }
+                }
+
+            });
+
             Scene scene = new Scene(dialogSearchView);
             stageSearch = new Stage();
             stageSearch.setScene(scene);
