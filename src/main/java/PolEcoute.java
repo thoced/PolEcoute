@@ -9,6 +9,7 @@ import dialogSearch.DialogSearchView;
 import dialogShowEventsView.DialogShowEventsListView;
 import dialogShowEventsView.DialogShowEventsView;
 import export.ExportRapport;
+import fr.opensagres.xdocreport.core.XDocReportException;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -24,6 +25,7 @@ import models.Event;
 import models.Numero;
 import models.OptionSearch;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.jdom.JDOMException;
 import parserEventsXml.ParserEventsXML;
 
 import java.io.File;
@@ -221,9 +223,17 @@ public class PolEcoute extends Application {
                     if(file != null){
                         ExportRapport exportRapport = new ExportRapport(file);
                         try {
-                            exportRapport.export(dialogShowEventsListView.getTableEvents().getItems());
-                           // exportRapport.replace(dialogShowEventsListView.getTableEvents().getItems());
+                            //exportRapport.export(dialogShowEventsListView.getTableEvents().getItems());
+                           exportRapport.replace(dialogShowEventsListView.getTableEvents().getItems());
+
                         } catch (IOException e) {
+                            e.printStackTrace();
+
+                        } catch (JDOMException e) {
+                            e.printStackTrace();
+                        } catch (InvalidFormatException e) {
+                            e.printStackTrace();
+                        } catch (XDocReportException e) {
                             e.printStackTrace();
                         }
                     }

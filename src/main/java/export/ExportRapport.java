@@ -1,9 +1,16 @@
 package export;
 
+import fr.opensagres.xdocreport.core.XDocReportException;
+import fr.opensagres.xdocreport.document.IXDocReport;
+import fr.opensagres.xdocreport.document.registry.XDocReportRegistry;
+import fr.opensagres.xdocreport.template.IContext;
+import fr.opensagres.xdocreport.template.TemplateEngineKind;
 import models.Event;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.xwpf.usermodel.*;
+import org.jdom.JDOMException;
+import org.jopendocument.dom.ODSingleXMLDocument;
+import org.jopendocument.dom.OOUtils;
 
 import java.io.*;
 import java.util.List;
@@ -12,6 +19,8 @@ public class ExportRapport {
 
     private XWPFDocument document;
     private File file;
+
+    private ODSingleXMLDocument documentOdt;
 
     public ExportRapport(File file){
 
@@ -26,7 +35,7 @@ public class ExportRapport {
         for(Event event : list) {
 
            XWPFRun run =  paragraph.createRun();
-           run.setText("Date et temps: " + event.getStartDate());  run.addTab();  run.setText("Durée: " + event.getDuration());
+           run.setText("Date et heure: " + event.getStartDate());  run.addTab();  run.setText("Durée: " + event.getDuration());
            run.addCarriageReturn();
            run.setText("Event Type: " + event.getEventType());
            run.addCarriageReturn();
@@ -63,38 +72,114 @@ public class ExportRapport {
 
     }
 
-    public void replace(List<Event> list) throws IOException, InvalidFormatException {
-        FileInputStream fileInputStream = new FileInputStream("/home/thonon/IdeaProjects/PolEcoute/src/main/resources/template.docx");
-        XWPFDocument doc = new XWPFDocument(fileInputStream);
 
-        List<XWPFParagraph> paragraphs = doc.getParagraphs();
 
-        for(XWPFParagraph paragraph : paragraphs){
-            List<XWPFRun> runs = paragraph.getRuns();
+    public void replace(List<Event> list) throws IOException, InvalidFormatException, XDocReportException, JDOMException {
+        // chargement du template
 
-            for(XWPFRun run : runs){
+        InputStream inputStream = getClass().getResourceAsStream("/template.odt");
 
-                String text = run.getText(0);
-                if(text != null &&  text.contains("%EVENTID%")){
-                   text = text.replace("%EVENTID%",list.get(0).getEventId());
+        IXDocReport report = XDocReportRegistry.getRegistry().loadReport(inputStream,TemplateEngineKind.Velocity);
+        IContext context = report.createContext();
 
-                }
+        int cpt = 0;
+        int nb = list.size();
 
-                if(text != null &&  text.contains("%DATE%")){
+        for(Event event : list) {
 
-                    text = text.replace("%DATE%",list.get(0).getStartDate());
+            if(event.getRelevancy() != null)
+                context.put("relevancy", event.getRelevancy());
+            else
+                context.put("relevancy","");
 
-                }
+            if(event.getEventType() != null)
+                context.put("type", event.getEventType());
+            else
+                context.put("type","");
 
-                run.setText(text,0);
-            }
 
+            if(event.getEventId() != null)
+                context.put("eventid", event.getEventId());
+            else
+                context.put("eventid","");
+
+            if(event.getStartDate() != null)
+                context.put("date",event.getStartDate());
+            else
+                context.put("date","");
+
+            if(event.getDuration() != null)
+                context.put("duration",event.getDuration());
+            else
+                context.put("duraction","");
+
+            if(event.getCallerId() != null)
+                context.put("callerid",event.getCallerId());
+            else
+                context.put("callerid","");
+
+
+            if(event.getCallerImei() != null)
+                context.put("callerimei",event.getCallerImei());
+            else
+                context.put("callerimei","");
+
+
+            if(event.getCallerImsi() != null)
+                context.put("callerimsi",event.getCallerImsi());
+            else
+                context.put("callerimsi","");
+
+
+            if(event.getCalledId() != null)
+                context.put("calledid",event.getCalledId());
+            else
+                context.put("calledid","");
+
+
+            if(event.getCalledImei() != null)
+                context.put("calledimei",event.getCalledImei());
+            else
+                context.put("calledimei","");
+
+
+            if(event.getCalledImsi() != null)
+                context.put("calledimsi",event.getCalledImsi());
+            else
+                context.put("calledimsi","");
+
+
+            if(event.getSynopsis() != null)
+                context.put("synopsis",event.getSynopsis());
+            else
+                context.put("synopsis","");
+
+
+            if(event.getTranscription() != null)
+                context.put("transcription",event.getTranscription());
+            else
+                context.put("transcription","");
+
+
+            OutputStream out = new FileOutputStream(System.getProperty("java.io.tmpdir") + "/" + cpt + ".odt");
+            report.process(context, out);
+            out.close();
+            cpt++;
         }
 
-        FileOutputStream fileOutputStream = new FileOutputStream(file);
-        doc.write(fileOutputStream);
-        doc.close();
-        fileOutputStream.close();
-        fileInputStream.close();
+        // utilisation de la librairon jopendocument pour pouvoir merger les différents fichier générés
+        ODSingleXMLDocument document = ODSingleXMLDocument.createFromPackage(new File(System.getProperty("java.io.tmpdir") + "/" + 0 + ".odt"));
+        for(int i=1;i<nb;i++){
+            ODSingleXMLDocument appendDocument = ODSingleXMLDocument.createFromPackage(new File(System.getProperty("java.io.tmpdir") + "/" + i + ".odt"));
+            document.add(appendDocument);
+        }
+
+        saveDocument(document);
+
+    }
+
+    public void saveDocument(ODSingleXMLDocument document) throws IOException {
+        document.saveToPackageAs(file);
+
     }
 }
