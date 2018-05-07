@@ -133,6 +133,7 @@ public class DialogShowEventsView extends VBox {
         textTranscription = new TextArea();
         textSynopsis.setWrapText(true);
         textSynopsis.setDisable(true);
+        textSynopsis.setStyle("-fx-background-color:lightblue;-fx-text-inner-color:blue; -fx-font-size: 16pt;");
 
 
         Label labelSynopsis = new Label("Synopsis:");

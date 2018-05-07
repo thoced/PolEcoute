@@ -13,8 +13,10 @@ import javafx.scene.layout.HBox;
 import jfxtras.scene.control.CalendarPicker;
 import models.Event;
 
+import javax.swing.plaf.basic.BasicInternalFrameTitlePane;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class DialogShowEventsListView extends BorderPane {
 
@@ -43,9 +45,6 @@ public class DialogShowEventsListView extends BorderPane {
 
     private void init() {
 
-
-
-
        GridPane gridPane = new GridPane();
        Label labelRelevancy = new Label("Relevancy");
        comboRelevancy = new ComboBox<String>();
@@ -63,6 +62,10 @@ public class DialogShowEventsListView extends BorderPane {
        calendarHaute = new CalendarPicker();
        calendarBasse.withShowTime(true);
        calendarHaute.withShowTime(true);
+
+       Locale local = new Locale("FR");
+       calendarBasse.withLocale(local);
+       calendarHaute.withLocale(local);
 
        ColumnConstraints columnConstraintsFirst = new ColumnConstraints();
        columnConstraintsFirst.setPercentWidth(10);
