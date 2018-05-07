@@ -11,6 +11,8 @@ public class DialogNewNumeroView extends BorderPane {
     private TextField textFieldNumero;
     private Button buttonAnnuler;
     private Button buttonAjouterNumero;
+    private Label labelTargetName;
+    private TextField textFiledTargetName;
 
     public DialogNewNumeroView() {
 
@@ -28,6 +30,12 @@ public class DialogNewNumeroView extends BorderPane {
 
         textFieldNumero = new TextField();
         gridPane.add(textFieldNumero,1,0);
+
+        labelTargetName = new Label("Nom du target");
+        gridPane.add(labelTargetName,0,1);
+
+        textFiledTargetName = new TextField();
+        gridPane.add(textFiledTargetName,1,1);
 
         RowConstraints rowConstraints = new RowConstraints();
         rowConstraints.setPercentHeight(20);
@@ -56,5 +64,9 @@ public class DialogNewNumeroView extends BorderPane {
 
     public Button getButtonAjouterNumero() {
         return buttonAjouterNumero;
+    }
+
+    public TextField getTextFiledTargetName() {
+        return textFiledTargetName;
     }
 }

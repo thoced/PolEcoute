@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: May 05, 2018 at 11:03 PM
+-- Generation Time: May 07, 2018 at 09:15 PM
 -- Server version: 10.1.31-MariaDB
 -- PHP Version: 7.2.3
 
@@ -71,6 +71,7 @@ CREATE TABLE `t_events` (
 CREATE TABLE `t_numero` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `callid` varchar(24) NOT NULL,
+  `target_name` varchar(128) DEFAULT NULL,
   `ref_id_dossier` bigint(20) UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -113,13 +114,13 @@ ALTER TABLE `t_dossiers`
 -- AUTO_INCREMENT for table `t_events`
 --
 ALTER TABLE `t_events`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2260;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2244;
 
 --
 -- AUTO_INCREMENT for table `t_numero`
 --
 ALTER TABLE `t_numero`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- Constraints for dumped tables

@@ -15,9 +15,10 @@ public class NumeroDAO extends DAO<Numero> {
 
     @Override
     public void insert(Numero model) throws SQLException {
-        PreparedStatement ps = (PreparedStatement) SingletonConnection.getInstance().getConnection().prepareStatement("insert into t_numero (callid,ref_id_dossier) VALUES (?,?)");
+        PreparedStatement ps = (PreparedStatement) SingletonConnection.getInstance().getConnection().prepareStatement("insert into t_numero (callid,target_name,ref_id_dossier) VALUES (?,?,?)");
         ps.setString(1,model.getCallId());
-        ps.setLong(2,model.getRefIdDossier());
+        ps.setString(2,model.getTargetName());
+        ps.setLong(3,model.getRefIdDossier());
         ps.executeUpdate();
         ps.close();
 
@@ -47,6 +48,7 @@ public class NumeroDAO extends DAO<Numero> {
             if(result.next()){
                 numero.setId(result.getLong("id"));
                 numero.setCallId(result.getString("callid"));
+                numero.setTargetName(result.getString("target_name"));
                 numero.setRefIdDossier(result.getLong("ref_id_dossier"));
 
             }
@@ -71,6 +73,7 @@ public class NumeroDAO extends DAO<Numero> {
                 Numero numero = new Numero();
                 numero.setId(resultSet.getLong("id"));
                 numero.setCallId(resultSet.getString("callid"));
+                numero.setTargetName(resultSet.getString("target_name"));
                 numero.setRefIdDossier(resultSet.getLong("ref_id_dossier"));
                 list.add(numero);
             }
@@ -95,6 +98,7 @@ public class NumeroDAO extends DAO<Numero> {
                 Numero numero = new Numero();
                 numero.setId(resultSet.getLong("id"));
                 numero.setCallId(resultSet.getString("callid"));
+                numero.setTargetName(resultSet.getString("target_name"));
                 numero.setRefIdDossier(resultSet.getLong("ref_id_dossier"));
                 list.add(numero);
             }

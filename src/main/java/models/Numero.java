@@ -6,6 +6,8 @@ public class Numero {
 
     private String callId;
 
+    private String targetName;
+
     private long refIdDossier;
 
     public Numero() {
@@ -27,6 +29,14 @@ public class Numero {
         this.callId = callId;
     }
 
+    public String getTargetName(){
+        return targetName;
+    }
+
+    public void setTargetName(String targetName) {
+        this.targetName = targetName;
+    }
+
     public long getRefIdDossier() {
         return refIdDossier;
     }
@@ -37,6 +47,6 @@ public class Numero {
 
     @Override
     public String toString() {
-        return callId;
+        return callId + " - " + targetName;
     }
 }

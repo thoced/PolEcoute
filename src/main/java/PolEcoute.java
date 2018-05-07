@@ -165,8 +165,11 @@ public class PolEcoute extends Application {
             });
             dialogNewNumeroView.getButtonAjouterNumero().setOnAction(baa -> {
                 String newNumero = dialogNewNumeroView.getTextFieldNumero().getText();
+                String newTarget  = dialogNewNumeroView.getTextFiledTargetName().getText();
                 Numero numero = new Numero();
                 numero.setCallId(newNumero);
+                numero.setTargetName(newTarget);
+
                 numero.setRefIdDossier(currentDossier.getId());
                 try {
                     DAOFactory.getInstance().getNUMERO_DAO().insert(numero);
@@ -192,15 +195,13 @@ public class PolEcoute extends Application {
             dialogNumeroShow.getButtonSelected().setOnAction(bs -> {
                 Numero numero  = (Numero) dialogNumeroShow.getListNumeroView().getSelectionModel().getSelectedItem();
                 dialogShowEventsListView = new DialogShowEventsListView();
-                try {
-                    List<Event> events = DAOFactory.getInstance().getEVENT_DAO().selectFromForeignKey(numero.getId());
-                    ObservableList<Event> observableList = FXCollections.observableList(events);
-                    dialogShowEventsListView.getTableEvents().getItems().clear();
-                    dialogShowEventsListView.getTableEvents().setItems(observableList);
 
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
+                   // List<Event> events = DAOFactory.getInstance().getEVENT_DAO().selectFromForeignKey(numero.getId());
+                   // ObservableList<Event> observableList = FXCollections.observableList(events);
+                   // dialogShowEventsListView.getTableEvents().getItems().clear();
+                   // dialogShowEventsListView.getTableEvents().setItems(observableList);
+
+
 
                 dialogShowEventsListView.getComboRelevancy().valueProperty().addListener((options,oldValue,newValue) -> {
                     OptionSearch.getInstance().setRelevancy(newValue);
@@ -305,6 +306,8 @@ public class PolEcoute extends Application {
                 dialogShowEventsListView.getButtonAnnuler().setOnAction(b -> {
                     stageShowEvents.hide();
                 });
+
+                dialogShowEventsListView.getComboRelevancy().getSelectionModel().select("Not set");
 
 
                 Scene scene = new Scene(dialogShowEventsListView);
