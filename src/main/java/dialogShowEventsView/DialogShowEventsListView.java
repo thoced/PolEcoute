@@ -119,20 +119,25 @@ public class DialogShowEventsListView extends BorderPane {
 
                    if(item != null && !empty) {
                        this.setText(item);
-                       Event event = (Event) this.getTableRow().getItem();
+                       if(this.getTableRow() != null) {
+                           Event event = (Event) this.getTableRow().getItem();
 
-                       // si la transcription est terminée
-                       if(event != null && event.isTranscriptionDone()){
-                           this.getTableRow().setStyle("-fx-background-color:#87B1CD");
+                           // si la transcription est terminée
+                           if (event != null && event.isTranscriptionDone()) {
+                               this.getTableRow().setStyle("-fx-background-color:#aed6f1");
+                               return;
+                           }
+
+                           // si la transcription est commencée mais pas terminée
+                           if (event != null && event.getTranscription() != null && !event.getTranscription().isEmpty()) {
+                               this.getTableRow().setStyle("-fx-background-color:#d6eaf8");
+                               return;
+                           }
+
+                           this.getTableRow().setStyle("");
                        }
 
-                       // si la transcription est commencée mais pas terminée
-                       if(event != null && event.getTranscription() != null){
-                           this.getTableRow().setStyle("-fx-background-color:#2A9385");
-                           return;
-                       }
 
-                       this.getTableRow().setStyle("");
                    }
 
                }

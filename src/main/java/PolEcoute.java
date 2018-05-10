@@ -198,6 +198,7 @@ public class PolEcoute extends Application {
             dialogNumeroShow.getButtonSelected().setOnAction(bs -> {
                 Numero numero  = (Numero) dialogNumeroShow.getListNumeroView().getSelectionModel().getSelectedItem();
                 dialogShowEventsListView = new DialogShowEventsListView();
+                dialogShowEventsListView.getTableEvents().getItems().clear();
 
                    // List<Event> events = DAOFactory.getInstance().getEVENT_DAO().selectFromForeignKey(numero.getId());
                    // ObservableList<Event> observableList = FXCollections.observableList(events);
@@ -413,11 +414,18 @@ public class PolEcoute extends Application {
                 if(mouse.getClickCount() > 1){
                     Event event = dialogSearchView.getTableEvents().getSelectionModel().getSelectedItem();
                     if(event != null) {
+
+                        try {
+                            event = (Event) DAOFactory.getInstance().getEVENT_DAO().find(event.getId());
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        }
                         DialogShowEventsView dialogShowEventsView = new DialogShowEventsView(null);
                         dialogShowEventsView.showEvent(event);
 
                         dialogShowEventsView.getButtonAnnuler().setOnAction(annuler -> {
-                            stageShowEvents.hide();
+
+                           stageShowEvents.hide();
                         });
 
                         dialogShowEventsView.getButtonEnregistrer().setOnAction(enr -> {

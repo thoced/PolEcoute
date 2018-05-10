@@ -1,5 +1,7 @@
 package models;
 
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
@@ -46,7 +48,7 @@ public class Event {
 
     private String smsContent;
 
-    private boolean transcriptionDone;
+    private BooleanProperty transcriptionDone = new SimpleBooleanProperty();
 
     private long refIdNumero;
 
@@ -228,11 +230,15 @@ public class Event {
     }
 
     public boolean isTranscriptionDone() {
+        return transcriptionDone.get();
+    }
+
+    public BooleanProperty transcriptionDoneProperty() {
         return transcriptionDone;
     }
 
     public void setTranscriptionDone(boolean transcriptionDone) {
-        this.transcriptionDone = transcriptionDone;
+        this.transcriptionDone.set(transcriptionDone);
     }
 
     public long getRefIdNumero() {

@@ -32,8 +32,11 @@ public class DialogShowEventsView extends VBox {
     private Button buttonEnregistrer;
     private Event currentEvent;
     private Button buttonEnregistrerAndExit;
+    private CheckBox checkTranscriptionDone;
+
 
     public static final String WARNING_WRITE_DIALOG = "Le fenetre va se fermer, voulez-vous sauvegarder vos modifications";
+
 
 
     public DialogShowEventsView(Numero numero) {
@@ -108,6 +111,7 @@ public class DialogShowEventsView extends VBox {
 
 
 
+
         gridPaneTop.addColumn(0,labelEventId,labelDateTime,labelCallerId,labelCallerImei,labelCallerImsi);
         gridPaneTop.addColumn(1,textEventId,textDateTime,textCallerId,textCallerImei,textCallerImsi);
         gridPaneTop.addColumn(2,labelEventType,labelDuration);
@@ -136,11 +140,16 @@ public class DialogShowEventsView extends VBox {
         rowConstraintsLabel.setPercentHeight(5);
 
 
+        checkTranscriptionDone = new CheckBox("Transcription complète");
+
+
+
+
         RowConstraints rowConstraintsLocation = new RowConstraints();
         HBox hBoxLocation = new HBox();
         hBoxLocation.setAlignment(Pos.CENTER_LEFT);
         hBoxLocation.setSpacing(16);
-        hBoxLocation.getChildren().addAll(labelLocation,textLocation);
+        hBoxLocation.getChildren().addAll(labelLocation,textLocation,checkTranscriptionDone);
 
 
         textSynopsis = new TextArea();
@@ -196,6 +205,7 @@ public class DialogShowEventsView extends VBox {
         textSynopsis.setText(event.getSynopsis());
         textTranscription.setText(event.getTranscription());
         textLocation.setText(event.getLocation());
+        checkTranscriptionDone.setSelected(event.isTranscriptionDone());
     }
 
     public Button getButtonAnnuler() {
@@ -217,6 +227,11 @@ public class DialogShowEventsView extends VBox {
     public TextField getTextLocation() {
         return textLocation;
     }
+
+    public CheckBox getCheckTranscriptionDone() {
+        return checkTranscriptionDone;
+    }
+
 
     public Event getCurrentEvent() {
         currentEvent.setTranscription(textTranscription.getText());
