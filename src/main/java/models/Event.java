@@ -46,6 +46,8 @@ public class Event {
 
     private String smsContent;
 
+    private boolean transcriptionDone;
+
     private long refIdNumero;
 
     public Event() {
@@ -223,6 +225,14 @@ public class Event {
 
     public void setSmsContent(String smsContent) {
         this.smsContent = smsContent;
+    }
+
+    public boolean isTranscriptionDone() {
+        return transcriptionDone;
+    }
+
+    public void setTranscriptionDone(boolean transcriptionDone) {
+        this.transcriptionDone = transcriptionDone;
     }
 
     public long getRefIdNumero() {
