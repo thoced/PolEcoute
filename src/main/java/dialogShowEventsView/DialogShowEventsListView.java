@@ -10,6 +10,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.util.Callback;
 import jfxtras.scene.control.CalendarPicker;
 import models.Event;
 
@@ -90,7 +91,9 @@ public class DialogShowEventsListView extends BorderPane {
            }
        });
 
-      this.setCenter(tableEvents);
+
+
+       this.setCenter(tableEvents);
 
 
        columnEventId = new TableColumn<Event,String>("Event Id");
@@ -106,6 +109,35 @@ public class DialogShowEventsListView extends BorderPane {
        columnCalled.setCellValueFactory(new PropertyValueFactory("calledId"));
        columnEventType.setCellValueFactory(new PropertyValueFactory("eventType"));
        tableEvents.getColumns().addAll(columnEventId,columnDate,columnCaller,columnCalled,columnEventType,columnSynopsis);
+
+
+       columnEventId.setCellFactory(p -> {
+           return new TableCell<Event,String>(){
+               @Override
+               protected void updateItem(String item, boolean empty) {
+                   super.updateItem(item, empty);
+
+                   if(item != null && !empty) {
+                       this.setText(item);
+                       Event event = (Event) this.getTableRow().getItem();
+
+                       // si la transcription est terminée
+                       if(event != null && event.isTranscriptionDone()){
+                           this.getTableRow().setStyle("-fx-background-color:#87B1CD");
+                       }
+
+                       // si la transcription est commencée mais pas terminée
+                       if(event != null && event.getTranscription() != null){
+                           this.getTableRow().setStyle("-fx-background-color:#2A9385");
+                           return;
+                       }
+
+                       this.getTableRow().setStyle("");
+                   }
+
+               }
+           };
+       });
 
 
        HBox hBox = new HBox();

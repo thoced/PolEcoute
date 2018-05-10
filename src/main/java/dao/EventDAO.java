@@ -40,7 +40,8 @@ public class EventDAO extends DAO<Event> {
                     "sms_content," +
                     "location," +
                     "transcription," +
-                    "ref_id_numero) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+                    "transcription_is_done," +
+                    "ref_id_numero) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -74,7 +75,8 @@ public class EventDAO extends DAO<Event> {
                 ps.setString(15, model.getSmsContent());
                 ps.setString(16, model.getLocation());
                 ps.setString(17, model.getTranscription());
-                ps.setLong(18, model.getRefIdNumero());
+                ps.setBoolean(18,model.isTranscriptionDone());
+                ps.setLong(19, model.getRefIdNumero());
 
                 ps.executeUpdate();
             }catch(SQLException sqe){
@@ -109,7 +111,8 @@ public class EventDAO extends DAO<Event> {
                 "sms_content," +
                 "location," +
                 "transcription," +
-                "ref_id_numero) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+                "transcription_is_done," +
+                "ref_id_numero) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 
         ps.setString(1,model.getEventId());
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss").withLocale(Locale.ROOT);
@@ -133,6 +136,7 @@ public class EventDAO extends DAO<Event> {
         ps.setString(15,model.getSmsContent());
         ps.setString(16,model.getLocation());
         ps.setString(17,model.getTranscription());
+        ps.setBoolean(18,model.isTranscriptionDone());
         ps.setLong(18,model.getRefIdNumero());
 
         ps.executeUpdate();
@@ -152,9 +156,10 @@ public class EventDAO extends DAO<Event> {
 
     @Override
     public void update(Event model) throws SQLException {
-        PreparedStatement ps = SingletonConnection.getInstance().getConnection().prepareStatement("update t_events SET transcription = ? WHERE id = ?");
+        PreparedStatement ps = SingletonConnection.getInstance().getConnection().prepareStatement("update t_events SET transcription = ?, transcription_is_done = ? WHERE id = ?");
         ps.setString(1,model.getTranscription());
-        ps.setLong(2,model.getId());
+        ps.setBoolean(2,model.isTranscriptionDone());
+        ps.setLong(3,model.getId());
         ps.executeUpdate();
         ps.close();
     }
@@ -185,6 +190,7 @@ public class EventDAO extends DAO<Event> {
             event.setSmsContent(resultSet.getString("sms_content"));
             event.setLocation(resultSet.getString("location"));
             event.setTranscription(resultSet.getString("transcription"));
+            event.setTranscriptionDone(resultSet.getBoolean("transcription_is_done"));
         }
         ps.close();
         return event;
@@ -216,6 +222,7 @@ public class EventDAO extends DAO<Event> {
             event.setSmsContent(resultSet.getString("sms_content"));
             event.setLocation(resultSet.getString("location"));
             event.setTranscription(resultSet.getString("transcription"));
+            event.setTranscriptionDone(resultSet.getBoolean("transcription_is_done"));
             list.add(event);
         }
         st.close();
@@ -250,6 +257,7 @@ public class EventDAO extends DAO<Event> {
             event.setSmsContent(resultSet.getString("sms_content"));
             event.setLocation(resultSet.getString("location"));
             event.setTranscription(resultSet.getString("transcription"));
+            event.setTranscriptionDone(resultSet.getBoolean("transcription_is_done"));
             list.add(event);
         }
         ps.close();
@@ -285,6 +293,7 @@ public class EventDAO extends DAO<Event> {
             event.setSmsContent(resultSet.getString("sms_content"));
             event.setLocation(resultSet.getString("location"));
             event.setTranscription(resultSet.getString("transcription"));
+            event.setTranscriptionDone(resultSet.getBoolean("transcription_is_done"));
             list.add(event);
         }
         ps.close();
@@ -320,6 +329,7 @@ public class EventDAO extends DAO<Event> {
             event.setSmsContent(resultSet.getString("sms_content"));
             event.setLocation(resultSet.getString("location"));
             event.setTranscription(resultSet.getString("transcription"));
+            event.setTranscriptionDone(resultSet.getBoolean("transcription_is_done"));
             list.add(event);
         }
         ps.close();
@@ -356,6 +366,7 @@ public class EventDAO extends DAO<Event> {
             event.setSmsContent(resultSet.getString("sms_content"));
             event.setLocation(resultSet.getString("location"));
             event.setTranscription(resultSet.getString("transcription"));
+            event.setTranscriptionDone(resultSet.getBoolean("transcription_is_done"));
             list.add(event);
         }
         ps.close();
