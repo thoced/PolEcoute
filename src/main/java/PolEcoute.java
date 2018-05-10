@@ -236,6 +236,8 @@ public class PolEcoute extends Application {
                             e.printStackTrace();
                         } catch (XDocReportException e) {
                             e.printStackTrace();
+                        } catch (SQLException e) {
+                            e.printStackTrace();
                         }
                     }
                 });
@@ -352,6 +354,19 @@ public class PolEcoute extends Application {
                     OptionSearch.getInstance().setKeySearch(dialogSearchView.getTextSearch().getText());
                     Numero numero = dialogSearchView.getComboNumero().getValue();
                     List<Event> list = ((EventDAO)DAOFactory.getInstance().getEVENT_DAO()).selectFromForeignKeyANDSearch(numero.getId(),OptionSearch.getInstance());
+                    dialogSearchView.getTableEvents().getItems().clear();
+                    dialogSearchView.getTableEvents().setItems(FXCollections.observableList(list));
+
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            });
+
+            dialogSearchView.getButtonSearchNumero().setOnAction(search -> {
+                try {
+                    OptionSearch.getInstance().setKeySearch(dialogSearchView.getTextSearchNumero().getText());
+                    Numero numero = dialogSearchView.getComboNumero().getValue();
+                    List<Event> list = ((EventDAO)DAOFactory.getInstance().getEVENT_DAO()).selectFromForeignKeyANDSearchNumero(numero.getId(),OptionSearch.getInstance());
                     dialogSearchView.getTableEvents().getItems().clear();
                     dialogSearchView.getTableEvents().setItems(FXCollections.observableList(list));
 

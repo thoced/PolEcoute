@@ -1,11 +1,13 @@
 package export;
 
+import dao.DAOFactory;
 import fr.opensagres.xdocreport.core.XDocReportException;
 import fr.opensagres.xdocreport.document.IXDocReport;
 import fr.opensagres.xdocreport.document.registry.XDocReportRegistry;
 import fr.opensagres.xdocreport.template.IContext;
 import fr.opensagres.xdocreport.template.TemplateEngineKind;
 import models.Event;
+import models.Numero;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.xwpf.usermodel.*;
 import org.jdom.JDOMException;
@@ -13,6 +15,7 @@ import org.jopendocument.dom.ODSingleXMLDocument;
 import org.jopendocument.dom.OOUtils;
 
 import java.io.*;
+import java.sql.SQLException;
 import java.util.List;
 
 public class ExportRapport {
@@ -74,7 +77,7 @@ public class ExportRapport {
 
 
 
-    public void replace(List<Event> list) throws IOException, InvalidFormatException, XDocReportException, JDOMException {
+    public void replace(List<Event> list) throws IOException, InvalidFormatException, XDocReportException, JDOMException, SQLException {
         // chargement du template
 
         InputStream inputStream = getClass().getResourceAsStream("/template.odt");
@@ -82,10 +85,18 @@ public class ExportRapport {
         IXDocReport report = XDocReportRegistry.getRegistry().loadReport(inputStream,TemplateEngineKind.Velocity);
         IContext context = report.createContext();
 
+        Numero numero = null;
+        // obtention des information sur le numero target
+        if(list != null && list.size() > 0) {
+            numero = (Numero) DAOFactory.getInstance().getNUMERO_DAO().find(list.get(0).getRefIdNumero());
+        }
         int cpt = 0;
         int nb = list.size();
 
         for(Event event : list) {
+
+            if(numero != null)
+                context.put("numerotarget",numero.getCallId());
 
             if(event.getRelevancy() != null)
                 context.put("relevancy", event.getRelevancy());

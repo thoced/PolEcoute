@@ -147,6 +147,7 @@ public class EventDAO extends DAO<Event> {
         PreparedStatement ps = SingletonConnection.getInstance().getConnection().prepareStatement("delete from t_events where id = ?");
         ps.setLong(1,id);
         ps.executeUpdate();
+        ps.close();
     }
 
     @Override
@@ -155,7 +156,7 @@ public class EventDAO extends DAO<Event> {
         ps.setString(1,model.getTranscription());
         ps.setLong(2,model.getId());
         ps.executeUpdate();
-
+        ps.close();
     }
 
     @Override
@@ -185,6 +186,7 @@ public class EventDAO extends DAO<Event> {
             event.setLocation(resultSet.getString("location"));
             event.setTranscription(resultSet.getString("transcription"));
         }
+        ps.close();
         return event;
     }
 
@@ -216,6 +218,7 @@ public class EventDAO extends DAO<Event> {
             event.setTranscription(resultSet.getString("transcription"));
             list.add(event);
         }
+        st.close();
         return list;
 
     }
@@ -249,7 +252,44 @@ public class EventDAO extends DAO<Event> {
             event.setTranscription(resultSet.getString("transcription"));
             list.add(event);
         }
+        ps.close();
         return list;
+    }
+
+    public List<Event> selectFromForeignKeyANDSearchNumero(long id,OptionSearch optionSearch) throws SQLException {
+        List<Event> list = new ArrayList<>();
+        PreparedStatement ps  = SingletonConnection.getInstance().getConnection().prepareStatement("select * from t_events where ref_id_numero = ? AND (caller_id LIKE ? OR called_id LIKE ?)");
+        ps.setLong(1,id);
+        String keySearch = "%" + optionSearch.getKeySearch() + "%";
+        ps.setString(2,keySearch); //  recherche sur base d'un numéro
+        ps.setString(3,keySearch); //  recherche sur base d'un numéro
+        ResultSet resultSet = ps.executeQuery();
+        while(resultSet.next()){
+            Event event = new Event();
+            event.setId(resultSet.getLong("id"));
+            event.setEventId(resultSet.getString("event_id"));
+            event.setRefIdNumero(resultSet.getLong("ref_id_numero"));
+            event.setStartDate(new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(resultSet.getTimestamp("start_date")));
+            event.setDuration(resultSet.getString("duration"));
+            event.setEventType(resultSet.getString("event_type"));
+            event.setDirection(resultSet.getString("direction"));
+            event.setRelevancy(resultSet.getString("relevancy"));
+            event.setCallerId(resultSet.getString("caller_id"));
+            event.setCallerImei(resultSet.getString("caller_imei"));
+            event.setCallerImsi(resultSet.getString("caller_imsi"));
+            event.setTargetName(resultSet.getString("target_name"));
+            event.setCalledId(resultSet.getString("called_id"));
+            event.setCalledImei(resultSet.getString("called_imei"));
+            event.setCalledImsi(resultSet.getString("called_imsi"));
+            event.setSynopsis(resultSet.getString("synopsis"));
+            event.setSmsContent(resultSet.getString("sms_content"));
+            event.setLocation(resultSet.getString("location"));
+            event.setTranscription(resultSet.getString("transcription"));
+            list.add(event);
+        }
+        ps.close();
+        return list;
+
     }
 
     public List<Event> selectFromForeignKeyANDSearch(long id,OptionSearch optionSearch) throws SQLException {
@@ -282,6 +322,7 @@ public class EventDAO extends DAO<Event> {
             event.setTranscription(resultSet.getString("transcription"));
             list.add(event);
         }
+        ps.close();
         return list;
 
     }
@@ -317,6 +358,7 @@ public class EventDAO extends DAO<Event> {
             event.setTranscription(resultSet.getString("transcription"));
             list.add(event);
         }
+        ps.close();
         return list;
 
 

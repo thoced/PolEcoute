@@ -75,6 +75,7 @@ public class DossierDAO extends DAO<Dossier> {
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
+
             return list;
      }
 

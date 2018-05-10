@@ -35,6 +35,8 @@ public class DialogSearchView extends BorderPane {
     private TextField textSearch;
     private Button buttonSearch;
     private TableColumn<Event,String> columnEventId;
+    private TextField textSearchNumero;
+    private Button buttonSearchNumero;
 
 
     public DialogSearchView() {
@@ -57,7 +59,12 @@ public class DialogSearchView extends BorderPane {
        textSearch = new TextField();
        buttonSearch = new Button("Rechercher");
 
+       Label labelSearchNumero = new Label("Rechercher le numéro suivant: ");
+       textSearchNumero = new TextField();
+       buttonSearchNumero = new Button("Rechercher un numéro");
+
        gridPane.addRow(1,labelSearch,textSearch,buttonSearch);
+       gridPane.addRow(2,labelSearchNumero,textSearchNumero,buttonSearchNumero);
 
        RowConstraints rowConstraints = new RowConstraints();
        rowConstraints.setValignment(VPos.CENTER);
@@ -69,7 +76,7 @@ public class DialogSearchView extends BorderPane {
 
 
        labelNbTuple = new Label(TEXT_LABEL_TUPLE);
-       gridPane.addRow(2,labelNbTuple);
+       gridPane.addRow(3,labelNbTuple);
        this.setTop(gridPane);
 
 
@@ -132,5 +139,13 @@ public class DialogSearchView extends BorderPane {
 
     public Button getButtonSearch() {
         return buttonSearch;
+    }
+
+    public TextField getTextSearchNumero() {
+        return textSearchNumero;
+    }
+
+    public Button getButtonSearchNumero() {
+        return buttonSearchNumero;
     }
 }
