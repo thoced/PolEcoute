@@ -77,7 +77,7 @@ public class ExportRapport {
 
 
 
-    public void replace(List<Event> list) throws IOException, InvalidFormatException, XDocReportException, JDOMException, SQLException {
+    public void replace(List<Event> list,String notice,String instruction,String numRapport,String periode) throws IOException, InvalidFormatException, XDocReportException, JDOMException, SQLException {
         // chargement du template
 
         InputStream inputStream = getClass().getResourceAsStream("/template.odt");
@@ -95,8 +95,30 @@ public class ExportRapport {
 
         for(Event event : list) {
 
+            if(numRapport != null)
+                context.put("rapport",numRapport);
+            else
+                context.put("rapport","");
+
+            if(periode != null)
+                context.put("periode",periode);
+            else
+                context.put("periode","");
+
+            if(notice != null)
+                context.put("notice",notice);
+            else
+                context.put("notice","");
+
+            if(instruction != null)
+                context.put("instruction",instruction);
+            else
+                context.put("instruction","");
+
             if(numero != null)
                 context.put("numerotarget",numero.getCallId());
+            else
+                context.put("numerotarget","");
 
             if(event.getRelevancy() != null)
                 context.put("relevancy", event.getRelevancy());

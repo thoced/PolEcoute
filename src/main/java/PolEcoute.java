@@ -8,6 +8,7 @@ import dialogOpenDossierView.DialogOpenDossierView;
 import dialogSearch.DialogSearchView;
 import dialogShowEventsView.DialogShowEventsListView;
 import dialogShowEventsView.DialogShowEventsView;
+import export.DialogExportRapportView;
 import export.ExportRapport;
 import fr.opensagres.xdocreport.core.XDocReportException;
 import javafx.application.Application;
@@ -51,6 +52,8 @@ public class PolEcoute extends Application {
     private Stage stageEvent;
     private DialogSearchView dialogSearchView;
     private Stage stageSearch;
+    private Stage stageExport;
+    private DialogExportRapportView dialogExportRapportView;
 
 
     public static void main(String[] args) {
@@ -219,27 +222,55 @@ public class PolEcoute extends Application {
                 });
 
                 dialogShowEventsListView.getButtonExport().setOnAction(action -> {
-                    FileChooser fileChooser = new FileChooser();
-                    File file = fileChooser.showSaveDialog(stageShowEvents);
-                    if(file != null){
-                        ExportRapport exportRapport = new ExportRapport(file);
-                        try {
-                            //exportRapport.export(dialogShowEventsListView.getTableEvents().getItems());
-                           exportRapport.replace(dialogShowEventsListView.getTableEvents().getItems());
 
-                        } catch (IOException e) {
-                            e.printStackTrace();
 
-                        } catch (JDOMException e) {
-                            e.printStackTrace();
-                        } catch (InvalidFormatException e) {
-                            e.printStackTrace();
-                        } catch (XDocReportException e) {
-                            e.printStackTrace();
-                        } catch (SQLException e) {
-                            e.printStackTrace();
+                    // Creation du Rapport
+                    dialogExportRapportView = new DialogExportRapportView();
+
+                    dialogExportRapportView.getButtonAnnuler().setOnAction(ba -> {
+                        stageExport.hide();
+                    });
+
+                    dialogExportRapportView.getButtonRapport().setOnAction(br -> {
+                        FileChooser fileChooser = new FileChooser();
+                        File file = fileChooser.showSaveDialog(stageShowEvents);
+                        if(file != null){
+                            ExportRapport exportRapport = new ExportRapport(file);
+                            try {
+                                //exportRapport.export(dialogShowEventsListView.getTableEvents().getItems());
+                                exportRapport.replace(dialogShowEventsListView.getTableEvents().getItems(),dialogExportRapportView.getTextFieldNotice().getText()
+                                        ,dialogExportRapportView.getTextFieldNumInstruction().getText(),
+                                        dialogExportRapportView.getTextNumeroRapport().getText(),
+                                        dialogExportRapportView.getTextPeriodeRapport().getText());
+
+                            } catch (IOException e) {
+                                e.printStackTrace();
+
+                            } catch (JDOMException e) {
+                                e.printStackTrace();
+                            } catch (InvalidFormatException e) {
+                                e.printStackTrace();
+                            } catch (XDocReportException e) {
+                                e.printStackTrace();
+                            } catch (SQLException e) {
+                                e.printStackTrace();
+                            }
                         }
-                    }
+
+                        stageExport.hide();
+                    });
+
+
+                    Scene scene = new Scene(dialogExportRapportView);
+                    stageExport = new Stage();
+                    stageExport.setScene(scene);
+                    stageExport.setTitle(DialogExportRapportView.NAME);
+                    stageExport.initModality(Modality.APPLICATION_MODAL);
+                    stageExport.initOwner(stageShowEvents);
+                    stageExport.showAndWait();
+                    stageExport.hide();
+
+
                 });
 
                 dialogShowEventsListView.getTableEvents().setOnMouseClicked(val -> {
