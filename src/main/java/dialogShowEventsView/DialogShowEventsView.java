@@ -27,12 +27,14 @@ public class DialogShowEventsView extends VBox {
     private TextArea textSynopsis;
     private TextArea textTranscription;
     private TextField textEventType;
+    private TextField textLocation;
     private Button buttonAnnuler;
     private Button buttonEnregistrer;
     private Event currentEvent;
     private Button buttonEnregistrerAndExit;
 
     public static final String WARNING_WRITE_DIALOG = "Le fenetre va se fermer, voulez-vous sauvegarder vos modifications";
+
 
     public DialogShowEventsView(Numero numero) {
         this.numero  = numero;
@@ -67,6 +69,9 @@ public class DialogShowEventsView extends VBox {
         textCalledImei = new TextField();
         textCalledImsi = new TextField();
         textEventType = new TextField();
+        textLocation = new TextField();
+        textLocation = new TextField();
+        textLocation.setMinWidth(512);
 
         textEventId.setDisable(true);
         textId.setDisable(true);
@@ -80,6 +85,7 @@ public class DialogShowEventsView extends VBox {
         textCalledImei.setDisable(true);
         textCalledImsi.setDisable(true);
         textEventType.setDisable(true);
+        textLocation.setDisable(true);
         
         
 
@@ -97,6 +103,8 @@ public class DialogShowEventsView extends VBox {
         Label labelCalledId = new Label("Numéro appelé");
         Label labelCalledImei = new Label("Imei appelé");
         Label labelCalledImsi = new Label("Imsi appelé");
+        Label labelLocation = new Label("Localisation");
+
 
 
 
@@ -128,6 +136,12 @@ public class DialogShowEventsView extends VBox {
         rowConstraintsLabel.setPercentHeight(5);
 
 
+        RowConstraints rowConstraintsLocation = new RowConstraints();
+        HBox hBoxLocation = new HBox();
+        hBoxLocation.setAlignment(Pos.CENTER_LEFT);
+        hBoxLocation.setSpacing(16);
+        hBoxLocation.getChildren().addAll(labelLocation,textLocation);
+
 
         textSynopsis = new TextArea();
         textTranscription = new TextArea();
@@ -139,12 +153,13 @@ public class DialogShowEventsView extends VBox {
         Label labelSynopsis = new Label("Synopsis:");
         Label labelTranscription = new Label("Transcription:");
 
-        gridPaneBottom.addColumn(0,labelSynopsis,textSynopsis,labelTranscription,textTranscription);
+        gridPaneBottom.addColumn(0,hBoxLocation,labelSynopsis,textSynopsis,labelTranscription,textTranscription);
         gridPaneBottom.getColumnConstraints().add(0,columnConstraintsBottom);
         gridPaneBottom.getRowConstraints().add(0,rowConstraintsLabel);
-        gridPaneBottom.getRowConstraints().add(1,rowConstraintsBottom);
-        gridPaneBottom.getRowConstraints().add(2,rowConstraintsLabel);
-        gridPaneBottom.getRowConstraints().add(3,rowConstraintsBottom);
+        gridPaneBottom.getRowConstraints().add(1,rowConstraintsLabel);
+        gridPaneBottom.getRowConstraints().add(2,rowConstraintsBottom);
+        gridPaneBottom.getRowConstraints().add(3,rowConstraintsLabel);
+        gridPaneBottom.getRowConstraints().add(4,rowConstraintsBottom);
 
 
         HBox hBox = new HBox();
@@ -180,6 +195,7 @@ public class DialogShowEventsView extends VBox {
         textEventType.setText(event.getEventType());
         textSynopsis.setText(event.getSynopsis());
         textTranscription.setText(event.getTranscription());
+        textLocation.setText(event.getLocation());
     }
 
     public Button getButtonAnnuler() {
@@ -196,6 +212,10 @@ public class DialogShowEventsView extends VBox {
 
     public TextArea getTextTranscription() {
         return textTranscription;
+    }
+
+    public TextField getTextLocation() {
+        return textLocation;
     }
 
     public Event getCurrentEvent() {

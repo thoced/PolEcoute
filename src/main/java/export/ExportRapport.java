@@ -194,6 +194,12 @@ public class ExportRapport {
                 context.put("transcription","");
 
 
+            if(event.getLocation() != null)
+                context.put("location",event.getLocation());
+            else
+                context.put("location","");
+
+
             OutputStream out = new FileOutputStream(System.getProperty("java.io.tmpdir") + "/" + cpt + ".odt");
             report.process(context, out);
             out.close();
@@ -208,6 +214,7 @@ public class ExportRapport {
         }
 
         saveDocument(document);
+
 
     }
 
