@@ -233,6 +233,9 @@ public class PolEcoute extends Application {
 
                     dialogExportRapportView.getButtonRapport().setOnAction(br -> {
                         FileChooser fileChooser = new FileChooser();
+                        fileChooser.setTitle("Indiquer l'emplace d'enregistrement du fichier ODT");
+                        FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter("ODT files (*.odt)", "*.odt");
+                        fileChooser.getExtensionFilters().addAll(filter);
                         File file = fileChooser.showSaveDialog(stageShowEvents);
                         if(file != null){
                             ExportRapport exportRapport = new ExportRapport(file);
