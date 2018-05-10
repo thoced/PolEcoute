@@ -30,13 +30,13 @@ public class DialogExportRapportView extends BorderPane {
         Label labelNotice = new Label("Numéro de Notice: ");
         textFieldNotice = new TextField();
 
-        Label labelNumInstruction = new Label("Numero d'instruction et Juge");
+        Label labelNumInstruction = new Label("Numero d'instruction et Juge: ");
         textFieldNumInstruction = new TextField();
 
-        Label labelNumeroRapport = new Label("Numero du rapport");
+        Label labelNumeroRapport = new Label("Numero du rapport: ");
         textNumeroRapport = new TextField();
 
-        Label labelDateRapport = new Label("Période du rapport");
+        Label labelDateRapport = new Label("Période du rapport: ");
         textPeriodeRapport = new TextField();
 
         gridPane.addRow(0,labelNotice,textFieldNotice);
