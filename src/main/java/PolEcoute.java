@@ -286,11 +286,13 @@ public class PolEcoute extends Application {
 
 
                             dialogShowEventsView.getButtonAnnuler().setOnAction(action -> {
+                                updateRefreshSearch(numero.getId());
                                 stageEvent.hide();
                             });
 
                             dialogShowEventsView.getButtonEnregistrer().setOnAction(action -> {
                                 try {
+                                    doneEvent(dialogShowEventsView);
                                     DAOFactory.getInstance().getEVENT_DAO().update(dialogShowEventsView.getCurrentEvent());
                                 } catch (SQLException e) {
                                     e.printStackTrace();
@@ -299,6 +301,7 @@ public class PolEcoute extends Application {
 
                             dialogShowEventsView.getButtonEnregistrerAndExit().setOnAction(action -> {
                                 try {
+                                    doneEvent(dialogShowEventsView);
                                     DAOFactory.getInstance().getEVENT_DAO().update(dialogShowEventsView.getCurrentEvent());
                                     stageEvent.hide();
                                     updateRefreshSearch(numero.getId());
@@ -430,6 +433,7 @@ public class PolEcoute extends Application {
 
                         dialogShowEventsView.getButtonEnregistrer().setOnAction(enr -> {
                             try {
+                                doneEvent(dialogShowEventsView);
                                 DAOFactory.getInstance().getEVENT_DAO().update(dialogShowEventsView.getCurrentEvent());
                             } catch (SQLException e) {
                                 e.printStackTrace();
@@ -438,6 +442,7 @@ public class PolEcoute extends Application {
 
                         dialogShowEventsView.getButtonEnregistrerAndExit().setOnAction(enr -> {
                             try {
+                                doneEvent(dialogShowEventsView);
                                 DAOFactory.getInstance().getEVENT_DAO().update(dialogShowEventsView.getCurrentEvent());
                                 stageShowEvents.hide();
                                 } catch (SQLException e) {
@@ -483,6 +488,23 @@ public class PolEcoute extends Application {
         primaryStage.show();
     }
 
+    private void doneEvent(DialogShowEventsView dialog) {
+        // on verifie si un transcription existe et on demande si il faut placer l'event en transcription_is_done
+        if(dialog.getTextTranscription() != null && !dialog.getTextTranscription().getText().isEmpty()){
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Clôture de l'event");
+            alert.setContentText("L'event doit-il être cloturé ?");
+            ButtonType buttonTypeOui = new ButtonType("Oui");
+            ButtonType buttonTypeNon = new ButtonType("Non");
+            alert.getButtonTypes().setAll(buttonTypeNon,buttonTypeOui);
+            Optional<ButtonType> optionals = alert.showAndWait();
+            if(optionals.get() == buttonTypeOui){
+                dialog.getCurrentEvent().setTranscriptionDone(true);
+            }else
+                dialog.getCurrentEvent().setTranscriptionDone(false);
+        }
+    }
+
     private void updateRefreshSearch(long id) {
         List<Event> events = null;
         try {
@@ -490,6 +512,7 @@ public class PolEcoute extends Application {
             ObservableList<Event> observableList = FXCollections.observableList(events);
             dialogShowEventsListView.getTableEvents().getItems().clear();
             dialogShowEventsListView.getTableEvents().setItems(observableList);
+            dialogShowEventsListView.getTableEvents().refresh();
         } catch (SQLException e) {
             e.printStackTrace();
         }

@@ -1,5 +1,6 @@
 package dialogShowEventsView;
 
+import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -10,7 +11,7 @@ import models.Numero;
 
 
 
-public class DialogShowEventsView extends VBox {
+public class DialogShowEventsView extends VBox  {
 
     private Numero numero;
     private TextField textEventId;
@@ -32,7 +33,6 @@ public class DialogShowEventsView extends VBox {
     private Button buttonEnregistrer;
     private Event currentEvent;
     private Button buttonEnregistrerAndExit;
-    private CheckBox checkTranscriptionDone;
 
 
     public static final String WARNING_WRITE_DIALOG = "Le fenetre va se fermer, voulez-vous sauvegarder vos modifications";
@@ -76,19 +76,19 @@ public class DialogShowEventsView extends VBox {
         textLocation = new TextField();
         textLocation.setMinWidth(512);
 
-        textEventId.setDisable(true);
-        textId.setDisable(true);
-        textDateTime.setDisable(true);
-        textDuration.setDisable(true);
-        textRelevancy.setDisable(true);
-        textCallerId.setDisable(true);
-        textCalledId.setDisable(true);
-        textCallerImei.setDisable(true);
-        textCallerImsi.setDisable(true);
-        textCalledImei.setDisable(true);
-        textCalledImsi.setDisable(true);
-        textEventType.setDisable(true);
-        textLocation.setDisable(true);
+        textEventId.setEditable(false);
+        textId.setEditable(false);
+        textDateTime.setEditable(false);
+        textDuration.setEditable(false);
+        textRelevancy.setEditable(false);
+        textCallerId.setEditable(false);
+        textCalledId.setEditable(false);
+        textCallerImei.setEditable(false);
+        textCallerImsi.setEditable(false);
+        textCalledImei.setEditable(false);
+        textCalledImsi.setEditable(false);
+        textEventType.setEditable(false);
+        textLocation.setEditable(false);
         
         
 
@@ -107,9 +107,6 @@ public class DialogShowEventsView extends VBox {
         Label labelCalledImei = new Label("Imei appelé");
         Label labelCalledImsi = new Label("Imsi appelé");
         Label labelLocation = new Label("Localisation");
-
-
-
 
 
         gridPaneTop.addColumn(0,labelEventId,labelDateTime,labelCallerId,labelCallerImei,labelCallerImsi);
@@ -140,22 +137,19 @@ public class DialogShowEventsView extends VBox {
         rowConstraintsLabel.setPercentHeight(5);
 
 
-        checkTranscriptionDone = new CheckBox("Transcription complète");
-
-
 
 
         RowConstraints rowConstraintsLocation = new RowConstraints();
         HBox hBoxLocation = new HBox();
         hBoxLocation.setAlignment(Pos.CENTER_LEFT);
         hBoxLocation.setSpacing(16);
-        hBoxLocation.getChildren().addAll(labelLocation,textLocation,checkTranscriptionDone);
+        hBoxLocation.getChildren().addAll(labelLocation,textLocation);
 
 
         textSynopsis = new TextArea();
         textTranscription = new TextArea();
         textSynopsis.setWrapText(true);
-        textSynopsis.setDisable(true);
+        textSynopsis.setEditable(false);
         textSynopsis.setStyle("-fx-background-color:lightblue;-fx-text-inner-color:blue; -fx-font-size: 16pt;");
 
 
@@ -205,7 +199,8 @@ public class DialogShowEventsView extends VBox {
         textSynopsis.setText(event.getSynopsis());
         textTranscription.setText(event.getTranscription());
         textLocation.setText(event.getLocation());
-        checkTranscriptionDone.setSelected(event.isTranscriptionDone());
+
+
     }
 
     public Button getButtonAnnuler() {
@@ -228,13 +223,11 @@ public class DialogShowEventsView extends VBox {
         return textLocation;
     }
 
-    public CheckBox getCheckTranscriptionDone() {
-        return checkTranscriptionDone;
-    }
-
 
     public Event getCurrentEvent() {
         currentEvent.setTranscription(textTranscription.getText());
         return currentEvent;
     }
+
+
 }
