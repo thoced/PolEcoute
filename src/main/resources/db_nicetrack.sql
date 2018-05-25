@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: May 07, 2018 at 09:15 PM
+-- Generation Time: May 13, 2018 at 06:32 PM
 -- Server version: 10.1.31-MariaDB
 -- PHP Version: 7.2.3
 
@@ -59,6 +59,7 @@ CREATE TABLE `t_events` (
   `sms_content` text,
   `location` varchar(64) DEFAULT NULL,
   `transcription` text,
+  `transcription_is_done` tinyint(1) NOT NULL DEFAULT '0',
   `ref_id_numero` bigint(20) UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -120,7 +121,7 @@ ALTER TABLE `t_events`
 -- AUTO_INCREMENT for table `t_numero`
 --
 ALTER TABLE `t_numero`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- Constraints for dumped tables
