@@ -21,74 +21,56 @@ import java.util.*;
 public class EventDAO extends DAO<Event> {
 
     public void insertAll(List<Event> listEvents){
-        PreparedStatement ps = null;
-        try {
-            ps = SingletonConnection.getInstance().getConnection().prepareStatement("insert into t_events (event_id," +
-                    "start_date," +
-                    "duration," +
-                    "event_type," +
-                    "direction," +
-                    "relevancy," +
-                    "caller_id," +
-                    "caller_imei," +
-                    "caller_imsi," +
-                    "target_name," +
-                    "called_id," +
-                    "called_imei," +
-                    "called_imsi," +
-                    "synopsis," +
-                    "sms_content," +
-                    "location," +
-                    "transcription," +
-                    "transcription_is_done," +
-                    "ref_id_numero) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-
-
 
         for(Event model: listEvents) {
 
             try {
-                ps.setString(1, model.getEventId());
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
-                //LocalDate localDate = LocalDate.parse(model.getStartDate() + " " + model.getStartTime(),formatter);
-                LocalDateTime localDateTime = LocalDateTime.parse(model.getStartDate() + " " + model.getStartTime(), formatter);
-                Timestamp timestamp = Timestamp.valueOf(localDateTime);
-              //  ps.setTimestamp(2, timestamp, Calendar.getInstance(TimeZone.getTimeZone(SingletonConnection.TIME_ZONE)));
-                ps.setTimestamp(2, timestamp);
 
-                ps.setString(3, model.getDuration());
-                ps.setString(4, model.getEventType());
-                ps.setString(5, model.getDirection());
-                ps.setString(6, model.getRelevancy());
-                ps.setString(7, model.getCallerId());
-                ps.setString(8, model.getCallerImei());
-                ps.setString(9, model.getCallerImsi());
-                ps.setString(10, model.getTargetName());
-                ps.setString(11, model.getCalledId());
-                ps.setString(12, model.getCalledImei());
-                ps.setString(13, model.getCalledImsi());
-                ps.setString(14, model.getSynopsis());
-                ps.setString(15, model.getSmsContent());
-                ps.setString(16, model.getLocation());
-                ps.setString(17, model.getTranscription());
-                ps.setBoolean(18,model.isTranscriptionDone());
-                ps.setLong(19, model.getRefIdNumero());
+                // 1) on vérifie si l'event id n'est pas déja présent, auquel cas, on teste si le champs transcription est déja remplis, si c'est c'est les cas
+                //on ne fait auccune mise à jour.
+                // Si l'event id n'existe pas, on insert
+                // si l'event id existe et que la transcriptin n'existe pas, on update
 
-                ps.executeUpdate();
-            }catch(SQLException sqe){
+                PreparedStatement psc = SingletonConnection.getInstance().getConnection().prepareStatement("select transcription from t_events where ref_id_numero = ? " +
+                        "AND event_id = ?");
+                psc.setLong(1, model.getRefIdNumero());
+                psc.setString(2, model.getEventId());
+                ResultSet resultSet = psc.executeQuery();
+                if (resultSet.next()) {
+                    // il y a bien un eventid identique
+                    String transcription = resultSet.getString("transcription");
+                    if (transcription == null || transcription.isEmpty()) {
+                        // on modifie ici
+                        updateAddEvent(model);
+                    }
+                } else {
+                    // il n'y a pas d'event id identique
+                    // on ajoute ici
+                    insert(model);
+                }
+            }catch(Exception e){
 
             }
+
+
         }
 
-        try {
-            ps.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+
+    }
+
+    /**
+     * update l'event qui existe déja si le champ transcription est vide
+     * @param model
+     */
+    private void updateAddEvent(Event model) throws SQLException {
+        PreparedStatement ps = SingletonConnection.getInstance().getConnection().prepareStatement("update t_events SET synopsis = ?, transcription = ?, relevancy = ? WHERE id = ?");
+        ps.setString(1,model.getSynopsis());
+        ps.setString(2,model.getTranscription());
+        ps.setString(3,model.getRelevancy());
+        ps.setLong(4,model.getId());
+        ps.executeUpdate();
+        ps.close();
+
 
     }
 
@@ -115,7 +97,7 @@ public class EventDAO extends DAO<Event> {
                 "ref_id_numero) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 
         ps.setString(1,model.getEventId());
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss").withLocale(Locale.ROOT);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
         //LocalDate localDate = LocalDate.parse(model.getStartDate() + " " + model.getStartTime(),formatter);
         LocalDateTime localDateTime = LocalDateTime.parse(model.getStartDate() + " " + model.getStartTime(),formatter);
         Timestamp timestamp = Timestamp.valueOf(localDateTime);

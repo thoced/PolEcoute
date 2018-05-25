@@ -17,6 +17,7 @@ import javafx.collections.ObservableList;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.scene.layout.Region;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -122,6 +123,15 @@ public class PolEcoute extends Application {
          });
 
             mainView.getItemImport().setOnAction(ii -> {
+                // ajout des events
+                // message d'avertissement indiquant que les event id existant seront modifié si et seulement si, aucun texte de transcription existe.
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setResizable(true);
+                alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+                alert.setTitle("Ajout des évenements");
+                alert.setContentText("Attention, si les évenements ajoutés existaient déja, seuls ceux dont la transcription n'avait pas encore été réalisée seront modifiés");
+                alert.showAndWait();
+
 
                 DialogNumeroShow dialogNumeroShow = new DialogNumeroShow(currentDossier);
                 dialogNumeroShow.getButtonAnnuler().setOnAction(ba -> {
