@@ -53,7 +53,7 @@ public class EventDAO extends DAO<Event> {
 
             try {
                 ps.setString(1, model.getEventId());
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy HH:mm:ss");
                 //LocalDate localDate = LocalDate.parse(model.getStartDate() + " " + model.getStartTime(),formatter);
                 LocalDateTime localDateTime = LocalDateTime.parse(model.getStartDate() + " " + model.getStartTime(), formatter);
                 Timestamp timestamp = Timestamp.valueOf(localDateTime);
@@ -79,6 +79,7 @@ public class EventDAO extends DAO<Event> {
                 ps.setLong(19, model.getRefIdNumero());
                 ps.executeUpdate();
             }catch(SQLException sqe){
+                System.out.println(sqe.getMessage());
             }
         }
 
@@ -113,7 +114,7 @@ public class EventDAO extends DAO<Event> {
                 "ref_id_numero) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 
         ps.setString(1,model.getEventId());
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss").withLocale(Locale.ROOT);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy HH:mm:ss").withLocale(Locale.ROOT);
         //LocalDate localDate = LocalDate.parse(model.getStartDate() + " " + model.getStartTime(),formatter);
         LocalDateTime localDateTime = LocalDateTime.parse(model.getStartDate() + " " + model.getStartTime(),formatter);
         Timestamp timestamp = Timestamp.valueOf(localDateTime);

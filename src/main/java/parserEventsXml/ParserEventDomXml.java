@@ -146,6 +146,11 @@ public class ParserEventDomXml {
                     event.setSmsContent(n.getTextContent());
                     break;
                 }
+
+                case "Transcription": {
+                    event.setTranscription(n.getTextContent());
+                    break;
+                }
             }
 
 
