@@ -1,9 +1,12 @@
 package parserEventsXml;
 
 
+import com.sun.xml.internal.messaging.saaj.util.ByteInputStream;
+import fr.opensagres.xdocreport.core.io.IOUtils;
 import models.Dossier;
 import models.Event;
 import models.Numero;
+import org.apache.xmlbeans.impl.common.IOUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -12,11 +15,13 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+
 import javax.xml.parsers.*;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ParserEventsXML extends DefaultHandler {
 
@@ -29,6 +34,8 @@ public class ParserEventsXML extends DefaultHandler {
     private Event event = null;
 
     private String text  = null;
+
+    private String synopsis = null;
 
     public ParserEventsXML(File fileXml, Numero numero) {
         this.fileXml = fileXml;
@@ -52,11 +59,14 @@ public class ParserEventsXML extends DefaultHandler {
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
 
         switch (qName){
-            case "Event": {
+
+                case "Event": {
                 event = new Event();
                 event.setEventId(attributes.getValue("ID"));
                 break;
             }
+
+
         }
 
     }
@@ -159,8 +169,28 @@ public class ParserEventsXML extends DefaultHandler {
 
     @Override
     public void characters(char[] ch, int start, int length) throws SAXException {
+
+      /*  String temp = String.copyValueOf(ch,0,ch.length);
+
+        temp = temp.replaceAll("\r", " ");
+        temp = temp.replaceAll("\n"," ");
+
+        ch = temp.toCharArray();
+
+        text = String.copyValueOf(ch,start,length);
+
+        int gg=  0;
+        gg++;*/
+       /* int start_synopsis = temp.indexOf("<Synopsis>");
+        int end_synopsis = temp.indexOf("</Synopsis>");
+        int size_synopsis = end_synopsis - start_synopsis;
+
+        synopsis = String.copyValueOf(ch,start_synopsis,size_synopsis);*/
+
         text = String.copyValueOf(ch,start,length);
     }
+
+
 
     private List<Event> parseEvents() throws ParserConfigurationException, IOException, SAXException {
 
@@ -168,8 +198,8 @@ public class ParserEventsXML extends DefaultHandler {
 
         SAXParser parser = parserFactor.newSAXParser();
 
-        parser.parse(this.fileXml,this);
 
+        parser.parse(this.fileXml,this);
         return listEvents;
     }
 

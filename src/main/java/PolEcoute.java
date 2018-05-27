@@ -27,8 +27,11 @@ import models.Numero;
 import models.OptionSearch;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.jdom.JDOMException;
+import org.xml.sax.SAXException;
+import parserEventsXml.ParserEventDomXml;
 import parserEventsXml.ParserEventsXML;
 
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -133,9 +136,22 @@ public class PolEcoute extends Application {
                     FileChooser fileChooser = new FileChooser();
                     File file = fileChooser.showOpenDialog(stage);
                     if(file != null){
-                        ParserEventsXML parserEventsXML = new ParserEventsXML(file,numero);
+                        /*ParserEventsXML parserEventsXML = new ParserEventsXML(file,numero);
                         List<Event> list = parserEventsXML.getListEvents();
-                        ((EventDAO)DAOFactory.getInstance().getEVENT_DAO()).insertAll(list);
+                        ((EventDAO)DAOFactory.getInstance().getEVENT_DAO()).insertAll(list);*/
+
+                        try {
+                            ParserEventDomXml parserEventsDomXml = new ParserEventDomXml(file,numero);
+                            List<Event> list = parserEventsDomXml.getListEvents();
+                            ((EventDAO)DAOFactory.getInstance().getEVENT_DAO()).insertAll(list);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        } catch (SAXException e) {
+                            e.printStackTrace();
+                        } catch (ParserConfigurationException e) {
+                            e.printStackTrace();
+                        }
+
                     }
                     stageImport.hide();
                 });

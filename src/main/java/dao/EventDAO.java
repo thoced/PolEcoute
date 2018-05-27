@@ -77,10 +77,8 @@ public class EventDAO extends DAO<Event> {
                 ps.setString(17, model.getTranscription());
                 ps.setBoolean(18,model.isTranscriptionDone());
                 ps.setLong(19, model.getRefIdNumero());
-
                 ps.executeUpdate();
             }catch(SQLException sqe){
-
             }
         }
 
