@@ -58,9 +58,9 @@ public class EventDAO extends DAO<Event> {
                 // Si l'event id n'existe pas, on insert
                 // si l'event id existe et que la transcriptin n'existe pas, on update
 
-                PreparedStatement psc = SingletonConnection.getInstance().getConnection().prepareStatement("select transcription from t_events where ref_id_numero = ? " +
-                        "AND event_id = ?");
-                psc.setLong(1, model.getRefIdNumero());
+                PreparedStatement psc = SingletonConnection.getInstance().getConnection().prepareStatement("select id,transcription from t_events where ref_id_numero = ? " +
+                        " AND event_id = ?");
+                  psc.setLong(1, model.getRefIdNumero());
                 psc.setString(2, model.getEventId());
                 ResultSet resultSet = psc.executeQuery();
                 if (resultSet.next()) {
@@ -68,6 +68,7 @@ public class EventDAO extends DAO<Event> {
                     String transcription = resultSet.getString("transcription");
                     if (transcription == null || transcription.isEmpty()) {
                         // on modifie ici
+                        model.setId(resultSet.getLong("id"));
                         updateAddEvent(model);
                     }
                 } else {
@@ -76,7 +77,7 @@ public class EventDAO extends DAO<Event> {
                     insert(model);
                 }
             }catch(Exception e){
-
+                System.out.println(e.getMessage());
             }
 
 
@@ -146,7 +147,7 @@ public class EventDAO extends DAO<Event> {
         ps.setString(16,model.getLocation());
         ps.setString(17,model.getTranscription());
         ps.setBoolean(18,model.isTranscriptionDone());
-        ps.setLong(18,model.getRefIdNumero());
+        ps.setLong(19,model.getRefIdNumero());
 
         ps.executeUpdate();
         ps.close();

@@ -58,6 +58,7 @@ public class PolEcoute extends Application {
     private Stage stageSearch;
     private Stage stageExport;
     private DialogExportRapportView dialogExportRapportView;
+    private boolean isAllItemRapport;
 
 
     public static void main(String[] args) {
@@ -250,6 +251,22 @@ public class PolEcoute extends Application {
 
                 dialogShowEventsListView.getButtonExport().setOnAction(action -> {
 
+                    // on exporte toute la vue ou uniquement les éléments selectionnés
+                    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                    alert.setTitle("Elements a exporter");
+                    alert.setContentText("Désirez vous générer le rapport de tous les éléments de la vue ou uniquement ceux sélectionnés ?");
+                    ButtonType buttonTypeAllItem = new ButtonType("Tous les élements");
+                    ButtonType buttonTypeSelectedItem = new ButtonType("Elements sélectionnés");
+                    alert.getButtonTypes().setAll(buttonTypeAllItem,buttonTypeSelectedItem);
+                    Optional<ButtonType> result = alert.showAndWait();
+                    isAllItemRapport = true;
+                    if(result.get() == buttonTypeAllItem){
+                        isAllItemRapport = true;
+                    }
+                    if(result.get() == buttonTypeSelectedItem){
+                        isAllItemRapport = false;
+                    }
+
 
                     // Creation du Rapport
                     dialogExportRapportView = new DialogExportRapportView();
@@ -259,6 +276,9 @@ public class PolEcoute extends Application {
                     });
 
                     dialogExportRapportView.getButtonRapport().setOnAction(br -> {
+
+                        
+
                         FileChooser fileChooser = new FileChooser();
                         fileChooser.setTitle("Indiquer l'emplace d'enregistrement du fichier ODT");
                         FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter("ODT files (*.odt)", "*.odt");
@@ -268,10 +288,20 @@ public class PolEcoute extends Application {
                             ExportRapport exportRapport = new ExportRapport(file);
                             try {
                                 //exportRapport.export(dialogShowEventsListView.getTableEvents().getItems());
-                                exportRapport.replace(dialogShowEventsListView.getTableEvents().getItems(),dialogExportRapportView.getTextFieldNotice().getText()
-                                        ,dialogExportRapportView.getTextFieldNumInstruction().getText(),
-                                        dialogExportRapportView.getTextNumeroRapport().getText(),
-                                        dialogExportRapportView.getTextPeriodeRapport().getText());
+                              if(isAllItemRapport) {
+                                  exportRapport.replace(dialogShowEventsListView.getTableEvents().getItems(), dialogExportRapportView.getTextFieldNotice().getText()
+                                          , dialogExportRapportView.getTextFieldNumInstruction().getText(),
+                                          dialogExportRapportView.getTextNumeroRapport().getText(),
+                                          dialogExportRapportView.getTextPeriodeRapport().getText());
+                              }
+                              else{
+                                  exportRapport.replace(dialogShowEventsListView.getTableEvents().getSelectionModel().getSelectedItems(), dialogExportRapportView.getTextFieldNotice().getText()
+                                          , dialogExportRapportView.getTextFieldNumInstruction().getText(),
+                                          dialogExportRapportView.getTextNumeroRapport().getText(),
+                                          dialogExportRapportView.getTextPeriodeRapport().getText());
+                              }
+
+
 
                             } catch (IOException e) {
                                 e.printStackTrace();

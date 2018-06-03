@@ -84,7 +84,9 @@ public class DialogShowEventsListView extends BorderPane {
        this.setTop(gridPane);
 
 
+
        tableEvents = new TableView<Event>();
+       tableEvents.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
        tableEvents.itemsProperty().addListener((options,oldValue,newValue) -> {
            if(newValue != null) {
                labelNbTuple.setText(TEXT_LABEL_TUPLE + " " + newValue.size());
