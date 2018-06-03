@@ -5,10 +5,12 @@ import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
 import models.Event;
 import models.Numero;
 
+import java.awt.event.KeyEvent;
 
 
 public class DialogShowEventsView extends VBox  {
@@ -175,7 +177,35 @@ public class DialogShowEventsView extends VBox  {
         hBox.getChildren().addAll(buttonAnnuler,buttonEnregistrer,buttonEnregistrerAndExit);
         this.getChildren().add(hBox);
 
+        textTranscription.addEventHandler(javafx.scene.input.KeyEvent.KEY_PRESSED,touch -> {
 
+            if(touch.getCode() != KeyCode.F1 && touch.getCode() != KeyCode.F2)
+                return;
+
+            int posCaret = textTranscription.getCaretPosition();
+            String currentText = textTranscription.getText();
+            StringBuilder builder = null;
+            if(currentText != null)
+                 builder = new StringBuilder(currentText);
+            else
+                builder = new StringBuilder();
+
+            String insertText;
+
+            if(touch.getCode() == KeyCode.F1)
+                insertText = "- Numéro cible: ";
+            else if(touch.getCode() == KeyCode.F2)
+                insertText = "- Correspondant: ";
+            else
+                insertText = "";
+
+
+            builder.insert(posCaret,insertText);
+
+            textTranscription.setText(builder.toString());
+            textTranscription.positionCaret(posCaret + insertText.length());
+
+        });
 
 
 
