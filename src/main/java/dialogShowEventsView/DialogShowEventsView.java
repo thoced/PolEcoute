@@ -175,7 +175,7 @@ public class DialogShowEventsView extends VBox  {
         textSynopsis.setWrapText(true);
         textSynopsis.setEditable(false);
         textSynopsis.setStyle("-fx-background-color:lightblue;-fx-text-inner-color:blue; -fx-font-size: 16pt;");
-
+        textTranscription.setStyle("-fx-font-size: 12pt;");
 
         Label labelSynopsis = new Label("Synopsis:");
         Label labelTranscription = new Label("Transcription: (touche F1 & F2 pour ajouter les entêtes, F4 pour la configuration)");
