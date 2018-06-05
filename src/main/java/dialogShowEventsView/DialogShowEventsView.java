@@ -1,16 +1,22 @@
 package dialogShowEventsView;
 
+import MainView.CConfig;
+import MainView.PropertiesNotFoundException;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import models.Event;
 import models.Numero;
 
 import java.awt.event.KeyEvent;
+import java.io.IOException;
 
 
 public class DialogShowEventsView extends VBox  {
@@ -36,21 +42,32 @@ public class DialogShowEventsView extends VBox  {
     private Event currentEvent;
     private Button buttonEnregistrerAndExit;
 
+    private String F1,F2;
+
 
     public static final String WARNING_WRITE_DIALOG = "Le fenetre va se fermer, voulez-vous sauvegarder vos modifications";
 
 
 
-    public DialogShowEventsView(Numero numero) {
+    public DialogShowEventsView(Numero numero)  {
         this.numero  = numero;
         init();
     }
 
-    private void init() {
+    private void init(){
+
+        // chargement des fonctions F1 & F2
+        try {
+            F1 = CConfig.getInstance().getF1();
+            F2 = CConfig.getInstance().getF2();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (PropertiesNotFoundException e) {
+            e.printStackTrace();
+        }
+
 
         this.setAlignment(Pos.CENTER);
-
-
 
         GridPane gridPaneTop = new GridPane();
         gridPaneTop.setAlignment(Pos.CENTER);
@@ -76,7 +93,7 @@ public class DialogShowEventsView extends VBox  {
         textEventType = new TextField();
         textLocation = new TextField();
         textLocation = new TextField();
-        textLocation.setMinWidth(512);
+        textLocation.setMinWidth(384);
 
         textEventId.setEditable(false);
         textId.setEditable(false);
@@ -109,6 +126,9 @@ public class DialogShowEventsView extends VBox  {
         Label labelCalledImei = new Label("Imei appelé");
         Label labelCalledImsi = new Label("Imsi appelé");
         Label labelLocation = new Label("Localisation");
+
+        Label labelF1 = new Label("(F1)");
+        Label labelF2 = new Label("(F2)");
 
 
         gridPaneTop.addColumn(0,labelEventId,labelDateTime,labelCallerId,labelCallerImei,labelCallerImsi);
@@ -148,6 +168,8 @@ public class DialogShowEventsView extends VBox  {
         hBoxLocation.getChildren().addAll(labelLocation,textLocation);
 
 
+
+
         textSynopsis = new TextArea();
         textTranscription = new TextArea();
         textSynopsis.setWrapText(true);
@@ -156,7 +178,7 @@ public class DialogShowEventsView extends VBox  {
 
 
         Label labelSynopsis = new Label("Synopsis:");
-        Label labelTranscription = new Label("Transcription:");
+        Label labelTranscription = new Label("Transcription: (touche F1 & F2 pour ajouter les entêtes, F4 pour la configuration)");
 
         gridPaneBottom.addColumn(0,hBoxLocation,labelSynopsis,textSynopsis,labelTranscription,textTranscription);
         gridPaneBottom.getColumnConstraints().add(0,columnConstraintsBottom);
@@ -165,6 +187,7 @@ public class DialogShowEventsView extends VBox  {
         gridPaneBottom.getRowConstraints().add(2,rowConstraintsBottom);
         gridPaneBottom.getRowConstraints().add(3,rowConstraintsLabel);
         gridPaneBottom.getRowConstraints().add(4,rowConstraintsBottom);
+
 
 
         HBox hBox = new HBox();
@@ -178,6 +201,10 @@ public class DialogShowEventsView extends VBox  {
         this.getChildren().add(hBox);
 
         textTranscription.addEventHandler(javafx.scene.input.KeyEvent.KEY_PRESSED,touch -> {
+
+            if(touch.getCode() == KeyCode.F4){
+                showFonctionSetting();
+            }
 
             if(touch.getCode() != KeyCode.F1 && touch.getCode() != KeyCode.F2)
                 return;
@@ -193,9 +220,9 @@ public class DialogShowEventsView extends VBox  {
             String insertText;
 
             if(touch.getCode() == KeyCode.F1)
-                insertText = "- Numéro cible: ";
+                insertText = F1;
             else if(touch.getCode() == KeyCode.F2)
-                insertText = "- Correspondant: ";
+                insertText = F2;
             else
                 insertText = "";
 
@@ -208,6 +235,40 @@ public class DialogShowEventsView extends VBox  {
         });
 
 
+
+    }
+
+    private void showFonctionSetting() {
+
+        DialogFonction dialogFonction = new DialogFonction();
+        try {
+            CConfig config = CConfig.getInstance();
+            dialogFonction.setTextF1(config.getF1());
+            dialogFonction.setTextF2(config.getF2());
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (PropertiesNotFoundException e) {
+            e.printStackTrace();
+        }
+
+
+
+        Stage stage = new Stage();
+        Scene scene = new Scene(dialogFonction);
+        stage.setScene(scene);
+        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.showAndWait();
+
+        try {
+            dialogFonction.saveFonction();
+            F1 = CConfig.getInstance().getF1();
+            F2 = CConfig.getInstance().getF2();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (PropertiesNotFoundException e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -257,6 +318,14 @@ public class DialogShowEventsView extends VBox  {
     public Event getCurrentEvent() {
         currentEvent.setTranscription(textTranscription.getText());
         return currentEvent;
+    }
+
+    public Numero getNumero() {
+        return numero;
+    }
+
+    public void setNumero(Numero numero) {
+        this.numero = numero;
     }
 
 

@@ -25,7 +25,7 @@ public class SingletonConnection {
     private SingletonConnection() {
 
         try {
-            CConfig config = new CConfig();
+            CConfig config = CConfig.getInstance();
 
             if(getConnection() == null){
                 Class.forName(config.getDriver());

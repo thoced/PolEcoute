@@ -11,6 +11,9 @@ import java.util.logging.Logger;
 
 public class CConfig
 {
+
+    public static CConfig instance = null;
+
     private String pathHomeDirectory;
     private String pathDirectoryConfig;
     private String pathFileConfig;
@@ -21,8 +24,26 @@ public class CConfig
     private String driver;
     private String url;
 
+    private String F1;
+    private String F2;
+
     private static final Logger log = Logger.getLogger(CConfig.class.getName());
 
+    public String getF1() {
+        return F1;
+    }
+
+    public void setF1(String f1) {
+        F1 = f1;
+    }
+
+    public String getF2() {
+        return F2;
+    }
+
+    public void setF2(String f2) {
+        F2 = f2;
+    }
 
     public String getLogin() {
         return login;
@@ -56,6 +77,15 @@ public class CConfig
         this.url = url;
     }
 
+    public static CConfig getInstance() throws IOException, PropertiesNotFoundException {
+        if(instance == null) {
+            instance = new CConfig();
+            instance.loadConfig();
+
+        }
+            return instance;
+    }
+
     private void loadConfig() throws IOException
     {
         FileInputStream fis = new FileInputStream(pathFileConfig);
@@ -68,8 +98,12 @@ public class CConfig
         password = prop.getProperty("password");
         driver = prop.getProperty("driver");
         url = prop.getProperty("url");
+        F1 = prop.getProperty("F1");
+        F2 = prop.getProperty("F2");
+
 
     }
+
 
     public void saveConfig() throws IOException
     {
@@ -81,12 +115,14 @@ public class CConfig
         prop.setProperty("password", this.getPassword());
         prop.setProperty("driver",this.getDriver());
         prop.setProperty("url", this.getUrl());
+        prop.setProperty("F1",this.getF1());
+        prop.setProperty("F2",this.getF2());
 
 
         prop.store(fos,null);
     }
 
-    public CConfig() throws IOException,PropertiesNotFoundException
+    private CConfig() throws IOException,PropertiesNotFoundException
     {
         // récupération du home directory
         pathHomeDirectory = System.getProperty("user.home");
@@ -127,6 +163,8 @@ public class CConfig
         prop.setProperty("password","");
         prop.setProperty("driver","com.mysql.cj.jdbc.Driver");
         prop.setProperty("url", "jdbc:mysql://localhost/db_nicetrack?serverTimezone=UTC");
+        prop.setProperty("F1","- Numéro cible: ");
+        prop.setProperty("F2","- Numéro correspondant: ");
 
         prop.store(output,null);
 
